@@ -595,14 +595,14 @@
         <div class="relative h-16 border-b border-[#1F2A33] px-4 flex items-center justify-between bg-[#0F1B23] flex-shrink-0">
             <div class="flex-1">
                 <button id="mobile-market-pair-btn" class="flex items-center gap-2 mb-1 hover:bg-[#121F29] px-2 py-1 -ml-2 rounded-lg transition-colors">
-                    <span class="text-base font-semibold">BTC-USDC</span>
-                    <span class="text-xs px-1.5 py-0.5 bg-[rgba(31,211,138,0.15)] text-[#1FD38A] rounded font-semibold">PERP</span>
+                    <span class="text-base font-semibold">HYPE/USDC</span>
+                    <span class="text-xs px-1.5 py-0.5 bg-[rgba(31,211,138,0.15)] text-[#1FD38A] rounded font-semibold">SPOT</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[#6B7C8B]">
                         <path d="M6 9l6 6 6-6"/>
                     </svg>
                 </button>
-                <div class="flex items-center gap-2">
-                    <span class="text-lg font-mono font-semibold">$43,821.50</span>
+                <div class="flex items-center gap-2" id="mobile-price-display">
+                    <span class="text-lg font-mono font-semibold">$25.842</span>
                     <span class="text-sm text-[#1FD38A]">+2.34%</span>
                 </div>
             </div>
@@ -955,7 +955,151 @@
             ]
         };
 
-        // COMPLETELY REWRITTEN Trading Chart Class - FIXED fullscreen sizing and rendering
+        // CRITICAL FIX: Market Data Manager - Enhanced mobile header update logic
+        class MarketDataManager {
+            constructor() {
+                this.currentPrice = 25.842;
+                this.change24h = 2.34;
+                this.volume24h = 189405;
+                this.marketCap = 824000000;
+                this.previousPrice = this.currentPrice;
+                this.init();
+            }
+
+            init() {
+                // Start price fluctuation updates
+                this.startPriceFluctuations();
+            }
+
+            startPriceFluctuations() {
+                // Update prices every 800ms for realistic market feel
+                setInterval(() => {
+                    this.updateMarketData();
+                    this.renderMarketHeader();
+                }, 800);
+
+                // Larger price movements every 3 seconds
+                setInterval(() => {
+                    this.applyLargePriceMovement();
+                }, 3000);
+            }
+
+            updateMarketData() {
+                // Store previous price for direction indication
+                this.previousPrice = this.currentPrice;
+
+                // Realistic micro price movement (±0.005 to ±0.02)
+                const microMovement = (Math.random() - 0.5) * 0.04;
+                this.currentPrice += microMovement;
+
+                // Keep price within reasonable bounds (23.0 to 28.0)
+                this.currentPrice = Math.max(23.0, Math.min(28.0, this.currentPrice));
+
+                // Calculate actual 24h change percentage
+                const basePrice = 25.242; // Starting price reference
+                this.change24h = ((this.currentPrice - basePrice) / basePrice) * 100;
+
+                // Volume fluctuation (±0.5% to ±2%)
+                const volumeChange = 1 + (Math.random() - 0.5) * 0.04;
+                this.volume24h *= volumeChange;
+                this.volume24h = Math.max(150000, Math.min(250000, this.volume24h));
+
+                // Market cap follows price with slight variance
+                const marketCapBase = 800000000;
+                const priceRatio = this.currentPrice / 25.842;
+                this.marketCap = marketCapBase * priceRatio * (1 + (Math.random() - 0.5) * 0.02);
+            }
+
+            applyLargePriceMovement() {
+                // 30% chance of larger price movement
+                if (Math.random() > 0.7) {
+                    const largeMovement = (Math.random() - 0.5) * 0.15;
+                    this.currentPrice += largeMovement;
+                    this.currentPrice = Math.max(23.0, Math.min(28.0, this.currentPrice));
+                }
+            }
+
+            renderMarketHeader() {
+                // Desktop market header - find the price element in the market stats section
+                const desktopMarketStats = document.querySelector('.h-\\[72px\\] .flex.items-center.gap-6.text-\\[13px\\]');
+                if (desktopMarketStats) {
+                    const priceDiv = desktopMarketStats.querySelector('div:first-child > div:first-child');
+                    if (priceDiv) {
+                        priceDiv.textContent = `$${this.currentPrice.toFixed(3)}`;
+                        
+                        // Add price flash animation
+                        const isUp = this.currentPrice > this.previousPrice;
+                        const isDown = this.currentPrice < this.previousPrice;
+                        
+                        if (isUp || isDown) {
+                            priceDiv.style.transition = 'color 0.3s ease';
+                            priceDiv.style.color = isUp ? '#1FD38A' : '#E05858';
+                            
+                            setTimeout(() => {
+                                priceDiv.style.color = '#E6EEF5';
+                            }, 300);
+                        }
+                    }
+                    
+                    // Update change percentage
+                    const changeDiv = desktopMarketStats.querySelector('div:first-child > div:last-child');
+                    if (changeDiv) {
+                        const isPositive = this.change24h >= 0;
+                        changeDiv.textContent = `${isPositive ? '+' : ''}${this.change24h.toFixed(2)}%`;
+                        changeDiv.className = `${isPositive ? 'text-[#1FD38A]' : 'text-[#E05858]'} text-[11px] font-medium`;
+                    }
+                    
+                    // Update volume (second div)
+                    const volumeDiv = desktopMarketStats.querySelector('div:nth-child(2) > div:last-child');
+                    if (volumeDiv) {
+                        volumeDiv.textContent = `${(this.volume24h / 1000).toFixed(3)}K`;
+                    }
+                    
+                    // Update market cap (third div)
+                    const marketCapDiv = desktopMarketStats.querySelector('div:nth-child(3) > div:last-child');
+                    if (marketCapDiv) {
+                        marketCapDiv.textContent = `$${(this.marketCap / 1000000).toFixed(0)}M`;
+                    }
+                }
+
+                // CRITICAL FIX: Enhanced mobile market header update using specific IDs
+                const mobilePriceDisplay = document.getElementById('mobile-price-display');
+                if (mobilePriceDisplay) {
+                    // Find the price element (first span in the container)
+                    const mobilePriceElement = mobilePriceDisplay.querySelector('span:first-child');
+                    if (mobilePriceElement) {
+                        mobilePriceElement.textContent = `$${this.currentPrice.toFixed(3)}`;
+                        
+                        // Add price flash animation for mobile
+                        const isUp = this.currentPrice > this.previousPrice;
+                        const isDown = this.currentPrice < this.previousPrice;
+                        
+                        if (isUp || isDown) {
+                            mobilePriceElement.style.transition = 'color 0.3s ease';
+                            mobilePriceElement.style.color = isUp ? '#1FD38A' : '#E05858';
+                            
+                            setTimeout(() => {
+                                mobilePriceElement.style.color = '#E6EEF5';
+                            }, 300);
+                        }
+                    }
+                    
+                    // Find the change percentage element (last span in the container)
+                    const mobileChangeElement = mobilePriceDisplay.querySelector('span:last-child');
+                    if (mobileChangeElement) {
+                        const isPositive = this.change24h >= 0;
+                        mobileChangeElement.textContent = `${isPositive ? '+' : ''}${this.change24h.toFixed(2)}%`;
+                        mobileChangeElement.className = `text-sm ${isPositive ? 'text-[#1FD38A]' : 'text-[#E05858]'}`;
+                    }
+                }
+            }
+
+            getCurrentPrice() {
+                return this.currentPrice;
+            }
+        }
+
+        // COMPLETELY REWRITTEN Trading Chart Class - NOW with real-time data fluctuation
         class TradingChart {
             constructor(canvasId, isMobile = false) {
                 this.canvas = document.getElementById(canvasId);
@@ -967,6 +1111,7 @@
                 this.crosshair = { x: null, y: null };
                 this.isMobile = isMobile;
                 this.touchActive = false;
+                this.marketDataManager = null; // Will be set from outside
                 
                 this.init();
             }
@@ -976,6 +1121,77 @@
                 this.generateData();
                 this.setupEventListeners();
                 this.draw();
+                this.startRealTimeUpdates(); // NEW: Start continuous chart updates
+            }
+
+            // NEW: Real-time candlestick data updates
+            startRealTimeUpdates() {
+                // Update the most recent candle every 1 second
+                setInterval(() => {
+                    if (this.data.length > 0 && this.marketDataManager) {
+                        this.updateLatestCandle();
+                        this.draw();
+                    }
+                }, 1000);
+
+                // Add new candle every 10 seconds for visual variety
+                setInterval(() => {
+                    this.addNewCandle();
+                    this.draw();
+                }, 10000);
+            }
+
+            // NEW: Update the most recent candle with live price data
+            updateLatestCandle() {
+                const latestCandle = this.data[this.data.length - 1];
+                const currentPrice = this.marketDataManager.getCurrentPrice();
+                
+                // Update close price to current market price
+                latestCandle.close = currentPrice;
+                
+                // Update high if current price exceeds it
+                if (currentPrice > latestCandle.high) {
+                    latestCandle.high = currentPrice;
+                }
+                
+                // Update low if current price is below it
+                if (currentPrice < latestCandle.low) {
+                    latestCandle.low = currentPrice;
+                }
+
+                // Volume fluctuation (realistic trading volume changes)
+                latestCandle.volume += (Math.random() - 0.5) * 20000;
+                latestCandle.volume = Math.max(80000, Math.min(300000, latestCandle.volume));
+            }
+
+            // NEW: Add a new candle to simulate time progression
+            addNewCandle() {
+                const now = Date.now();
+                const lastCandle = this.data[this.data.length - 1];
+                
+                // New candle starts where last one closed
+                const open = lastCandle.close;
+                const volatility = 0.3 + Math.random() * 0.5;
+                
+                // Generate realistic OHLC data
+                const high = open + Math.random() * volatility;
+                const low = open - Math.random() * volatility;
+                const close = low + Math.random() * (high - low);
+                const volume = 100000 + Math.random() * 150000;
+
+                this.data.push({
+                    time: now,
+                    open,
+                    high,
+                    low,
+                    close,
+                    volume
+                });
+
+                // Keep only last 250 candles to prevent memory issues
+                if (this.data.length > 250) {
+                    this.data.shift();
+                }
             }
 
             // CRITICAL FIX: Proper canvas sizing that accounts for ALL UI elements
@@ -1011,9 +1227,6 @@
                 // Store actual drawable dimensions
                 this.width = availableWidth;
                 this.height = availableHeight;
-                
-                // DEBUGGING: Log actual dimensions
-                console.log(`Chart Canvas Dimensions: ${this.width}x${this.height} (Container: ${containerRect.width}x${containerRect.height})`);
             }
 
             // CRITICAL FIX: Generate sufficient data points to fill entire chart width
@@ -1180,11 +1393,15 @@
                 const currentVolume = document.getElementById('current-volume');
                 
                 if (!ohlcOpen || x === null) {
-                    if (ohlcOpen) ohlcOpen.textContent = '25.842';
-                    if (ohlcHigh) ohlcHigh.textContent = '27.123';
-                    if (ohlcLow) ohlcLow.textContent = '23.456';
-                    if (ohlcClose) ohlcClose.textContent = '25.842';
-                    if (currentVolume) currentVolume.textContent = '189.405K';
+                    // Show latest candle data when not hovering
+                    if (this.data.length > 0 && ohlcOpen) {
+                        const latestCandle = this.data[this.data.length - 1];
+                        ohlcOpen.textContent = latestCandle.open.toFixed(3);
+                        ohlcHigh.textContent = latestCandle.high.toFixed(3);
+                        ohlcLow.textContent = latestCandle.low.toFixed(3);
+                        ohlcClose.textContent = latestCandle.close.toFixed(3);
+                        if (currentVolume) currentVolume.textContent = (latestCandle.volume / 1000).toFixed(3) + 'K';
+                    }
                     return;
                 }
                 
@@ -2074,11 +2291,16 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
+            // NEW: Initialize market data manager first
+            const marketDataManager = new MarketDataManager();
+            
             // Desktop chart
             const chart = new TradingChart('trading-chart', false);
+            chart.marketDataManager = marketDataManager; // Connect chart to live market data
             
             // Mobile chart with touch support
             const mobileChart = new TradingChart('mobile-trading-chart', true);
+            mobileChart.marketDataManager = marketDataManager; // Connect mobile chart to live market data
             
             // Shared components
             const orderBook = new OrderBookManager();
