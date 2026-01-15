@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Crypto Trading Dashboard - Institutional Grade Platform</title>
+    <title>Ace Coin Demo</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -819,7 +819,7 @@
                 <div class="flex flex-col items-center gap-1">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
+                        <circle cx="12" cy="12" r="10"></circle>
                     </svg>
                     <span>Account</span>
                 </div>
@@ -828,22 +828,22 @@
     </div>
 </section>
 
-    <!-- Main JavaScript - Mobile Touch Event Support -->
+    <!-- Main JavaScript with Fixed Chart Padding Configuration -->
     <script>
-        // Configuration matching Figma specifications - FIXED for proper chart boundaries
+        // COMPLETELY REWRITTEN Configuration - FIXED for proper fullscreen display
         const CONFIG = {
             candleWidth: 6,
             candleGap: 2,
             volumeHeight: 80,
             chartPadding: {
                 top: 80,
-                right: 60,  // INCREASED from 15 to 60 - provides proper space for price axis labels and prevents candle cutoff
+                right: 45,  // OPTIMIZED for price axis visibility
                 bottom: 100,
                 left: 70
             },
             mobilePadding: {
                 top: 40,
-                right: 45,  // INCREASED from 15 to 45 - ensures price labels don't clip and candles are fully visible
+                right: 35,  // OPTIMIZED for mobile price axis
                 bottom: 60,
                 left: 40
             },
@@ -952,7 +952,7 @@
             ]
         };
 
-        // Trading Chart Class with MOBILE TOUCH SUPPORT
+        // COMPLETELY REWRITTEN Trading Chart Class - FIXED fullscreen sizing and rendering
         class TradingChart {
             constructor(canvasId, isMobile = false) {
                 this.canvas = document.getElementById(canvasId);
@@ -963,7 +963,7 @@
                 this.timeframe = '1h';
                 this.crosshair = { x: null, y: null };
                 this.isMobile = isMobile;
-                this.touchActive = false; // Track touch state
+                this.touchActive = false;
                 
                 this.init();
             }
@@ -975,22 +975,64 @@
                 this.draw();
             }
 
+            // CRITICAL FIX: Proper canvas sizing that accounts for ALL UI elements
             setupCanvas() {
-                const rect = this.canvas.getBoundingClientRect();
+                // FIXED: Get parent container's actual computed dimensions
+                const container = this.canvas.parentElement;
+                const containerRect = container.getBoundingClientRect();
+                
+                // CRITICAL: Calculate actual available space
+                let availableWidth = containerRect.width;
+                let availableHeight = containerRect.height;
+                
+                // For desktop, account for padding in parent container
+                if (!this.isMobile) {
+                    const computedStyle = window.getComputedStyle(container);
+                    const paddingTop = parseFloat(computedStyle.paddingTop) || 0;
+                    const paddingBottom = parseFloat(computedStyle.paddingBottom) || 0;
+                    const paddingLeft = parseFloat(computedStyle.paddingLeft) || 0;
+                    const paddingRight = parseFloat(computedStyle.paddingRight) || 0;
+                    
+                    availableWidth = availableWidth - paddingLeft - paddingRight;
+                    availableHeight = availableHeight - paddingTop - paddingBottom;
+                }
+                
+                // CRITICAL: Set canvas dimensions to exact available space
                 const dpr = window.devicePixelRatio || 1;
-                this.canvas.width = rect.width * dpr;
-                this.canvas.height = rect.height * dpr;
+                this.canvas.width = availableWidth * dpr;
+                this.canvas.height = availableHeight * dpr;
+                
+                // Scale context for high DPI displays
                 this.ctx.scale(dpr, dpr);
-                this.width = rect.width;
-                this.height = rect.height;
+                
+                // Store actual drawable dimensions
+                this.width = availableWidth;
+                this.height = availableHeight;
+                
+                // DEBUGGING: Log actual dimensions
+                console.log(`Chart Canvas Dimensions: ${this.width}x${this.height} (Container: ${containerRect.width}x${containerRect.height})`);
             }
 
+            // CRITICAL FIX: Generate sufficient data points to fill entire chart width
             generateData() {
                 const now = Date.now();
-                const interval = 3600000;
+                const interval = 3600000; // 1 hour intervals
                 let basePrice = 25.000;
 
-                for (let i = 100; i >= 0; i--) {
+                // FIXED: Calculate how many candles we need based on canvas width
+                const padding = this.isMobile ? CONFIG.mobilePadding : CONFIG.chartPadding;
+                const chartWidth = this.width - padding.left - padding.right;
+                const candleFullWidth = CONFIG.candleWidth + CONFIG.candleGap;
+                const maxPossibleCandles = Math.ceil(chartWidth / candleFullWidth);
+                
+                // Generate extra candles to ensure we always have enough data
+                const dataPoints = Math.max(200, maxPossibleCandles + 50);
+                
+                console.log(`Generating ${dataPoints} candles for chart width ${chartWidth}px (max visible: ${maxPossibleCandles})`);
+
+                this.data = []; // Clear existing data
+                
+                for (let i = dataPoints - 1; i >= 0; i--) {
                     const time = now - (i * interval);
                     const volatility = 0.5 + Math.random() * 1.0;
                     const trend = Math.sin(i / 10) * 0.3;
@@ -1121,7 +1163,9 @@
             }
 
             handleResize() {
+                // CRITICAL: Recalculate canvas dimensions and regenerate data on resize
                 this.setupCanvas();
+                this.generateData();
                 this.draw();
             }
 
@@ -1141,7 +1185,10 @@
                     return;
                 }
                 
-                const index = this.getIndexFromX(x);
+                const rect = this.canvas.getBoundingClientRect();
+                const canvasX = x - rect.left;
+                const index = this.getIndexFromX(canvasX);
+                
                 if (index >= 0 && index < this.data.length) {
                     const candle = this.data[index];
                     ohlcOpen.textContent = candle.open.toFixed(3);
@@ -1156,7 +1203,9 @@
                 const tooltip = document.getElementById('chart-tooltip');
                 if (!tooltip) return;
                 
-                const index = this.getIndexFromX(x);
+                const rect = this.canvas.getBoundingClientRect();
+                const canvasX = x - rect.left;
+                const index = this.getIndexFromX(canvasX);
                 
                 if (index >= 0 && index < this.data.length) {
                     const candle = this.data[index];
@@ -1167,8 +1216,8 @@
                     document.getElementById('tooltip-close').textContent = '$' + candle.close.toFixed(3);
                     document.getElementById('tooltip-volume').textContent = (candle.volume / 1000).toFixed(2) + 'K';
                     
-                    tooltip.style.left = `${Math.min(x + 15, this.width - 200)}px`;
-                    tooltip.style.top = `${Math.min(y + 15, this.height - 150)}px`;
+                    tooltip.style.left = `${Math.min(x + 15, window.innerWidth - 200)}px`;
+                    tooltip.style.top = `${Math.min(y + 15, window.innerHeight - 150)}px`;
                     tooltip.classList.remove('hidden');
                 }
             }
@@ -1187,29 +1236,40 @@
                 return Math.floor((x - padding.left) / candleFullWidth) + startIndex;
             }
 
+            // CRITICAL FIX: Completely rewritten draw method with proper space allocation
             draw() {
                 const padding = this.isMobile ? CONFIG.mobilePadding : CONFIG.chartPadding;
                 
+                // Clear entire canvas
                 this.ctx.fillStyle = CONFIG.colors.bgPrimary;
                 this.ctx.fillRect(0, 0, this.width, this.height);
 
+                // CRITICAL: Calculate actual drawable area accounting for volume and padding
                 const chartWidth = this.width - padding.left - padding.right;
-                const chartHeight = this.height - padding.top - padding.bottom - CONFIG.volumeHeight;
+                const totalChartArea = this.height - padding.top - padding.bottom;
+                const chartHeight = totalChartArea - CONFIG.volumeHeight;
+                
+                // CRITICAL FIX: Calculate visible candles to fill entire width
                 const candleFullWidth = CONFIG.candleWidth + CONFIG.candleGap;
                 const maxVisible = Math.floor(chartWidth / candleFullWidth);
+                
+                // Always show most recent candles, filling entire width
                 const startIndex = Math.max(0, this.data.length - maxVisible);
                 const visibleData = this.data.slice(startIndex);
+                
+                console.log(`Drawing ${visibleData.length} candles (${startIndex} to ${this.data.length}) for width ${chartWidth}px`);
 
+                // Price range and volume calculations
                 const priceRange = { min: 23.0, max: 27.0 };
                 const volumeMax = Math.max(...visibleData.map(d => d.volume));
 
+                // FIXED RENDERING ORDER: Grid → Candles → Volume → Axes → Crosshair
                 this.drawGrid(chartHeight, chartWidth, padding);
-                this.drawVolume(visibleData, volumeMax, padding);
                 this.drawCandlesticks(visibleData, priceRange, chartHeight, padding);
+                this.drawVolume(visibleData, volumeMax, padding, chartHeight);
                 this.drawPriceAxis(priceRange, chartHeight, padding);
-                this.drawTimeAxis(visibleData, startIndex, padding);
+                this.drawTimeAxis(visibleData, startIndex, padding, chartHeight);
                 
-                // Show crosshair on mobile when touch is active OR on desktop with mouse
                 if (this.crosshair.x !== null && (this.isMobile ? this.touchActive : true)) {
                     this.drawCrosshair(chartHeight, padding);
                 }
@@ -1244,17 +1304,20 @@
                 this.ctx.setLineDash([]);
             }
 
+            // CRITICAL FIX: Candlesticks now render in correct space without cutoff
             drawCandlesticks(visibleData, priceRange, chartHeight, padding) {
                 visibleData.forEach((candle, i) => {
                     const x = padding.left + i * (CONFIG.candleWidth + CONFIG.candleGap);
                     const isGreen = candle.close >= candle.open;
                     const color = isGreen ? CONFIG.colors.marketGreen : CONFIG.colors.marketRed;
 
+                    // FIXED: Calculate Y positions within actual chart height
                     const openY = padding.top + (1 - (candle.open - priceRange.min) / (priceRange.max - priceRange.min)) * chartHeight;
                     const closeY = padding.top + (1 - (candle.close - priceRange.min) / (priceRange.max - priceRange.min)) * chartHeight;
                     const highY = padding.top + (1 - (candle.high - priceRange.min) / (priceRange.max - priceRange.min)) * chartHeight;
                     const lowY = padding.top + (1 - (candle.low - priceRange.min) / (priceRange.max - priceRange.min)) * chartHeight;
 
+                    // Draw wick
                     this.ctx.strokeStyle = color;
                     this.ctx.lineWidth = 1;
                     this.ctx.beginPath();
@@ -1262,6 +1325,7 @@
                     this.ctx.lineTo(x + CONFIG.candleWidth / 2, lowY);
                     this.ctx.stroke();
 
+                    // Draw body
                     this.ctx.fillStyle = color;
                     const bodyHeight = Math.abs(closeY - openY);
                     const bodyY = Math.min(openY, closeY);
@@ -1269,8 +1333,9 @@
                 });
             }
 
-            drawVolume(visibleData, volumeMax, padding) {
-                const volumeY = this.height - padding.bottom;
+            // CRITICAL FIX: Volume bars now render in designated space below chart
+            drawVolume(visibleData, volumeMax, padding, chartHeight) {
+                const volumeStartY = padding.top + chartHeight;
                 
                 visibleData.forEach((candle, i) => {
                     const x = padding.left + i * (CONFIG.candleWidth + CONFIG.candleGap);
@@ -1279,7 +1344,7 @@
                     const isGreen = candle.close >= candle.open;
                     
                     this.ctx.fillStyle = isGreen ? 'rgba(31, 211, 138, 0.9)' : 'rgba(224, 88, 88, 0.9)';
-                    this.ctx.fillRect(x, volumeY - barHeight, CONFIG.candleWidth, barHeight);
+                    this.ctx.fillRect(x, volumeStartY + CONFIG.volumeHeight - barHeight, CONFIG.candleWidth, barHeight);
                 });
             }
 
@@ -1295,18 +1360,20 @@
                 }
             }
 
-            drawTimeAxis(visibleData, startIndex, padding) {
+            drawTimeAxis(visibleData, startIndex, padding, chartHeight) {
                 this.ctx.fillStyle = CONFIG.colors.textMuted;
                 this.ctx.font = this.isMobile ? '9px Inter' : '11px Inter';
                 this.ctx.textAlign = 'center';
 
                 const step = Math.max(1, Math.floor(visibleData.length / 6));
+                const timeAxisY = padding.top + chartHeight + CONFIG.volumeHeight + 15;
+                
                 for (let i = 0; i < visibleData.length; i += step) {
                     const candle = visibleData[i];
                     const x = padding.left + i * (CONFIG.candleWidth + CONFIG.candleGap) + CONFIG.candleWidth / 2;
                     const date = new Date(candle.time);
                     const timeStr = `${date.getHours()}:${String(date.getMinutes()).padStart(2, '0')}`;
-                    this.ctx.fillText(timeStr, x, this.height - padding.bottom + 20);
+                    this.ctx.fillText(timeStr, x, timeAxisY);
                 }
             }
 
@@ -1317,7 +1384,7 @@
 
                 this.ctx.beginPath();
                 this.ctx.moveTo(this.crosshair.x, padding.top);
-                this.ctx.lineTo(this.crosshair.x, this.height - padding.bottom);
+                this.ctx.lineTo(this.crosshair.x, padding.top + chartHeight);
                 this.ctx.stroke();
 
                 this.ctx.beginPath();
