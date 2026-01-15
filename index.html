@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TradePlatform - Professional Crypto Spot Trading</title>
+    <link rel="stylesheet" href="css/main.css">
+  </head>
+<body class="min-h-screen overflow-x-hidden bg-zinc-950 text-white antialiased">
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 border-b border-zinc-800 bg-zinc-950">
+        <div class="max-w-full px-4 py-2.5 flex items-center justify-between">
+            <a href="#" class="flex items-center gap-2">
+                <img src="assets/images/IMG_20260115_133429_460-1768464368957.jpg" alt="TradePlatform logo" class="h-8 w-8 object-cover rounded">
+                <span class="text-sm font-semibold tracking-tight">AsiaCoin</span>
+            </a>
+            
+            <div class="hidden md:flex items-center gap-6 text-xs font-medium">
+                <a href="#" class="text-zinc-400 hover:text-white transition-colors">Trade</a>
+                <a href="#" class="text-zinc-400 hover:text-white transition-colors">Markets</a>
+                <a href="#" class="text-zinc-400 hover:text-white transition-colors">Portfolio</a>
+                <a href="#" class="text-zinc-400 hover:text-white transition-colors">Leaderboard</a>
+                <button class="px-4 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-black text-xs font-semibold rounded transition-all">
+                    Connect Wallet
+                </button>
+            </div>
+
+            <button id="mobile-menu-btn" class="md:hidden p-1.5 border border-zinc-800 rounded">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+
+        <div id="mobile-menu" class="hidden md:hidden border-t border-zinc-800 bg-zinc-950">
+            <div class="px-4 py-3 space-y-2">
+                <a href="#" class="block text-zinc-400 hover:text-white transition-colors text-sm">Trade</a>
+                <a href="#" class="block text-zinc-400 hover:text-white transition-colors text-sm">Markets</a>
+                <a href="#" class="block text-zinc-400 hover:text-white transition-colors text-sm">Portfolio</a>
+                <a href="#" class="block text-zinc-400 hover:text-white transition-colors text-sm">Leaderboard</a>
+                <button class="w-full px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-black text-sm font-semibold rounded transition-all">
+                    Connect Wallet
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+<section class="min-h-screen pt-14 bg-zinc-950">
+    <div class="h-[calc(100vh-3.5rem)] flex flex-col">
+        
+        <!-- Trading Platform Layout -->
+        <div class="flex-1 grid grid-cols-1 lg:grid-cols-12 border-t border-zinc-800">
+            
+            <!-- LEFT SIDEBAR: Trading Pairs -->
+            <div class="lg:col-span-2 flex flex-col border-r border-zinc-800 bg-zinc-950 hidden lg:flex">
+                <!-- Sidebar Header -->
+                <div class="px-3 py-3 border-b border-zinc-800">
+                    <h3 class="text-xs font-semibold mb-3">Markets</h3>
+                    
+                    <!-- Search Bar -->
+                    <div class="relative mb-3">
+                        <input 
+                            type="text" 
+                            id="market-search" 
+                            placeholder="Search pairs..." 
+                            class="w-full bg-zinc-900 border border-zinc-800 rounded px-3 py-1.5 text-xs outline-none focus:border-emerald-500 transition-colors pl-8"
+                        >
+                        <svg class="absolute left-2.5 top-2 w-3.5 h-3.5 text-zinc-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+
+                    <!-- Filter Tabs -->
+                    <div class="flex gap-1">
+                        <button class="market-filter-btn flex-1 px-2 py-1 text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded" data-filter="all">
+                            All
+                        </button>
+                        <button class="market-filter-btn flex-1 px-2 py-1 text-[10px] font-semibold text-zinc-500 border border-zinc-800 rounded hover:bg-zinc-900 transition-colors" data-filter="favorites">
+                            ⭐ Fav
+                        </button>
+                        <button class="market-filter-btn flex-1 px-2 py-1 text-[10px] font-semibold text-zinc-500 border border-zinc-800 rounded hover:bg-zinc-900 transition-colors" data-filter="gainers">
+                            🔥 Top
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Trading Pairs List -->
+                <div class="flex-1 overflow-y-auto">
+                    <!-- Column Headers -->
+                    <div class="sticky top-0 bg-zinc-950 px-3 py-2 border-b border-zinc-800 flex items-center justify-between text-[10px] text-zinc-500 font-semibold">
+                        <span>Pair</span>
+                        <span>Price</span>
+                        <span>24h %</span>
+                    </div>
+
+                    <!-- Trading Pairs -->
+                    <div id="trading-pairs-list" class="divide-y divide-zinc-900">
+                        <!-- Pairs will be dynamically inserted here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- CENTER: Chart Section (7 columns) -->
+            <div class="lg:col-span-7 flex flex-col border-r border-zinc-800">
+                
+                <!-- Market Header -->
+                <div class="border-b border-zinc-800 px-4 py-3 flex items-center justify-between">
+                    <div class="flex items-center gap-6">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h3 id="active-pair-name" class="text-lg font-bold">BTC/USDT</h3>
+                                <span class="text-xs text-zinc-500">Spot</span>
+                            </div>
+                            <div class="flex items-baseline gap-2 mt-0.5">
+                                <span id="current-price" class="text-xl font-bold text-emerald-400">$43,821.50</span>
+                                <span id="price-change" class="text-emerald-400 text-xs">+$1,234.50</span>
+                                <span id="price-change-percent" class="text-emerald-400 text-xs">+2.34%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="hidden md:flex items-center gap-6 text-xs">
+                            <div>
+                                <div class="text-zinc-500">24h High</div>
+                                <div id="high-24h" class="font-semibold">$44,125.00</div>
+                            </div>
+                            <div>
+                                <div class="text-zinc-500">24h Low</div>
+                                <div id="low-24h" class="font-semibold">$42,890.00</div>
+                            </div>
+                            <div>
+                                <div class="text-zinc-500">24h Volume</div>
+                                <div id="volume-24h" class="font-semibold">$2.4B</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-2">
+                        <button class="timeframe-btn px-3 py-1 text-xs border border-zinc-800 rounded hover:bg-zinc-900 transition-colors" data-timeframe="1m">1m</button>
+                        <button class="timeframe-btn px-3 py-1 text-xs border border-zinc-800 rounded hover:bg-zinc-900 transition-colors" data-timeframe="5m">5m</button>
+                        <button class="timeframe-btn px-3 py-1 text-xs border border-emerald-500 bg-emerald-500/10 text-emerald-400 rounded active" data-timeframe="1h">1h</button>
+                        <button class="timeframe-btn px-3 py-1 text-xs border border-zinc-800 rounded hover:bg-zinc-900 transition-colors" data-timeframe="4h">4h</button>
+                        <button class="timeframe-btn px-3 py-1 text-xs border border-zinc-800 rounded hover:bg-zinc-900 transition-colors" data-timeframe="1D">1D</button>
+                    </div>
+                </div>
+
+                <!-- Chart Area -->
+                <div class="flex-1 bg-zinc-950 relative">
+                    <canvas id="trading-chart" class="w-full h-full"></canvas>
+                    <div id="chart-tooltip" class="absolute hidden bg-zinc-900 border border-zinc-800 rounded px-3 py-2 text-xs pointer-events-none z-10">
+                        <div class="space-y-1">
+                            <div class="font-semibold text-zinc-300">Time: <span id="tooltip-time"></span></div>
+                            <div class="text-emerald-400">O: <span id="tooltip-open"></span></div>
+                            <div class="text-blue-400">H: <span id="tooltip-high"></span></div>
+                            <div class="text-red-400">L: <span id="tooltip-low"></span></div>
+                            <div class="text-zinc-100">C: <span id="tooltip-close"></span></div>
+                            <div class="text-zinc-400">Vol: <span id="tooltip-volume"></span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Trading Panel -->
+                <div class="border-t border-zinc-800 bg-zinc-950">
+                    <div class="flex items-center gap-2 px-4 py-2 border-b border-zinc-800">
+                        <button class="px-3 py-1.5 text-xs font-medium text-white bg-zinc-900 rounded">Open Orders (0)</button>
+                        <button class="px-3 py-1.5 text-xs font-medium text-zinc-500 hover:text-white transition-colors">Order History</button>
+                        <button class="px-3 py-1.5 text-xs font-medium text-zinc-500 hover:text-white transition-colors">Trade History</button>
+                    </div>
+                    <div class="px-4 py-8 text-center text-zinc-600 text-sm">
+                        No open orders
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: Order Book + Trading Panel (3 columns) -->
+            <div class="lg:col-span-3 flex flex-col bg-zinc-950">
+                
+                <!-- Order Book -->
+                <div class="flex-1 flex flex-col overflow-hidden">
+                    <div class="px-3 py-2 border-b border-zinc-800">
+                        <h3 class="text-xs font-semibold">Order Book</h3>
+                    </div>
+                    
+                    <div class="flex-1 overflow-y-auto">
+                        <!-- Sell Orders -->
+                        <div class="px-3 py-2">
+                            <div class="text-[10px] text-zinc-500 mb-2 flex justify-between">
+                                <span>Price(USDT)</span>
+                                <span>Amount</span>
+                            </div>
+                            <div class="space-y-0.5 font-mono text-[11px]">
+                                <div class="flex justify-between text-red-400 hover:bg-red-500/5 px-1 py-0.5 rounded cursor-pointer">
+                                    <span>43,828.00</span>
+                                    <span>0.234</span>
+                                </div>
+                                <div class="flex justify-between text-red-400 hover:bg-red-500/5 px-1 py-0.5 rounded cursor-pointer">
+                                    <span>43,827.50</span>
+                                    <span>0.567</span>
+                                </div>
+                                <div class="flex justify-between text-red-400 hover:bg-red-500/5 px-1 py-0.5 rounded cursor-pointer">
+                                    <span>43,827.00</span>
+                                    <span>1.123</span>
+                                </div>
+                                <div class="flex justify-between text-red-400 hover:bg-red-500/5 px-1 py-0.5 rounded cursor-pointer">
+                                    <span>43,826.50</span>
+                                    <span>0.891</span>
+                                </div>
+                                <div class="flex justify-between text-red-400 hover:bg-red-500/5 px-1 py-0.5 rounded cursor-pointer">
+                                    <span>43,826.00</span>
+                                    <span>2.345</span>
+                                </div>
+                                <div class="flex justify-between text-red-400 hover:bg-red-500/5 px-1 py-0.5 rounded cursor-pointer">
+                                    <span>43,825.50</span>
+                                    <span>0.678</span>
+                                </div>
+                                <div class="flex justify-between text-red-400 hover:bg-red-500/5 px-1 py-0.5 rounded cursor-pointer">
+                                    <span>43,825.00</span>
+                                    <span>1.456</span>
+                                </div>
+                                <div class="flex justify-between text-red-400 hover:bg-red-500/5 px-1 py-0.5 rounded cursor-pointer">
+                                    <span>43,824.50</span>
+                                    <span>0.234</span>
+                                </div>
+                                <div class="flex justify-between text-red-400 hover:bg-red-500/5 px-1 py-0.5 rounded cursor-pointer">
+                                    <span>43,824.00</span>
+                                    <span>3.567</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Current Price -->
+                        <div class="px-3 py-2 bg-emerald-500/5 border-y border-emerald-500/20">
+                            <div class="flex items-center justify-between">
+                                <span class="text-base font-bold text-emerald-400">43,821.50</span>
+                                <span class="text-[10px] text-emerald-400">↑ $125.30</span>
+                            </div>
+                        </div>
+
+                        <!-- Buy Orders -->
+                        <div class="px-3 py-2">
+                            <div class="space-y-0.5 font-mono text-[11px]">
+                                <div class="flex justify-between text-emerald-400 hover:bg-emerald-500/5 px-1 py-0.5 rounded cursor-pointer">
+                                    <span>43,821.00</span>
+                                    <span>1.234</span>
+                                </div>
+                                <div class="flex justify-between text-emerald-400 hover:bg-emerald-500/5 px-1 py-0.5 rounded cursor-pointer">
+                                    <span>43,820.50</span>
+                                    <span>2.567</span>
+                                </div>
+                                <div class="flex justify-between text-emerald-400 hover:bg-emerald-500/5 px-1 py-0.5 rounded cursor-pointer">
+                                    <span>43,820.00</span>
+                                    <span>0.891</span>
+                                </div>
+                                <div class="flex justify-between text-emerald-400 hover:bg-emerald-500/5 px-1 py-0.5 rounded cursor-pointer">
+                                    <span>43,819.50</span>
+                                    <span>1.456</span>
+                                </div>
+                                <div class="flex justify-between text-emerald-400 hover:bg-emerald-500/5 px-1 py-0.5 rounded cursor-pointer">
+                                    <span>43,819.00</span>
+                                    <span>3.234</span>
+                                </div>
+                                <div class="flex justify-between text-emerald-400 hover:bg-emerald-500/5 px-1 py-0.5 rounded cursor-pointer">
+                                    <span>43,818.50</span>
+                                    <span>0.678</span>
+                                </div>
+                                <div class="flex justify-between text-emerald-400 hover:bg-emerald-500/5 px-1 py-0.5 rounded cursor-pointer">
+                                    <span>43,818.00</span>
+                                    <span>2.789</span>
+                                </div>
+                                <div class="flex justify-between text-emerald-400 hover:bg-emerald-500/5 px-1 py-0.5 rounded cursor-pointer">
+                                    <span>43,817.50</span>
+                                    <span>1.123</span>
+                                </div>
+                                <div class="flex justify-between text-emerald-400 hover:bg-emerald-500/5 px-1 py-0.5 rounded cursor-pointer">
+                                    <span>43,817.00</span>
+                                    <span>0.456</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trading Panel -->
+                <div class="border-t border-zinc-800 p-3">
+                    <div class="flex gap-1 mb-3">
+                        <button class="flex-1 py-1.5 text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded">Buy</button>
+                        <button class="flex-1 py-1.5 text-xs font-semibold text-zinc-500 hover:text-white border border-zinc-800 rounded transition-colors">Sell</button>
+                    </div>
+
+                    <div class="space-y-2">
+                        <div>
+                            <label class="text-[10px] text-zinc-500 mb-1 block">Price</label>
+                            <div class="bg-zinc-900 border border-zinc-800 rounded px-2 py-1.5">
+                                <input type="text" placeholder="Market" class="bg-transparent w-full outline-none font-mono text-xs">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="text-[10px] text-zinc-500 mb-1 block">Amount</label>
+                            <div class="bg-zinc-900 border border-zinc-800 rounded px-2 py-1.5">
+                                <input type="text" placeholder="0.00" class="bg-transparent w-full outline-none font-mono text-xs">
+                            </div>
+                        </div>
+
+                        <button class="w-full py-2 bg-emerald-500 hover:bg-emerald-600 text-black text-xs font-bold rounded transition-all">
+                            Buy BTC
+                        </button>
+                    </div>
+
+                    <div class="mt-3 pt-3 border-t border-zinc-800 text-[10px] text-zinc-500 space-y-1">
+                        <div class="flex justify-between">
+                            <span>Available</span>
+                            <span class="text-white font-semibold">0.00 USDT</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Max Buy</span>
+                            <span class="text-white font-semibold">0.00 BTC</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <!-- Main JavaScript -->
+    <script>
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+
+        // Trading Pairs Data - Updated to USDT pairs
+        const tradingPairs = [
+            { symbol: 'BTC/USDT', name: 'Bitcoin', price: 43821.50, change24h: 2.34, volume: 2400000000, isFavorite: false },
+            { symbol: 'ETH/USDT', name: 'Ethereum', price: 2284.75, change24h: 3.67, volume: 1800000000, isFavorite: false },
+            { symbol: 'SOL/USDT', name: 'Solana', price: 98.42, change24h: 8.92, volume: 890000000, isFavorite: false },
+            { symbol: 'AVAX/USDT', name: 'Avalanche', price: 36.87, change24h: -1.23, volume: 450000000, isFavorite: false },
+            { symbol: 'MATIC/USDT', name: 'Polygon', price: 0.89, change24h: 4.56, volume: 320000000, isFavorite: false },
+            { symbol: 'ARB/USDT', name: 'Arbitrum', price: 1.42, change24h: 6.78, volume: 280000000, isFavorite: false },
+            { symbol: 'OP/USDT', name: 'Optimism', price: 2.34, change24h: -2.45, volume: 190000000, isFavorite: false },
+            { symbol: 'LINK/USDT', name: 'Chainlink', price: 14.67, change24h: 1.89, volume: 410000000, isFavorite: false },
+            { symbol: 'UNI/USDT', name: 'Uniswap', price: 6.23, change24h: 3.21, volume: 220000000, isFavorite: false },
+            { symbol: 'AAVE/USDT', name: 'Aave', price: 89.45, change24h: -0.87, volume: 150000000, isFavorite: false },
+            { symbol: 'DOGE/USDT', name: 'Dogecoin', price: 0.082, change24h: 5.43, volume: 560000000, isFavorite: false },
+            { symbol: 'XRP/USDT', name: 'Ripple', price: 0.58, change24h: 2.11, volume: 890000000, isFavorite: false },
+            { symbol: 'ADA/USDT', name: 'Cardano', price: 0.42, change24h: -1.56, volume: 340000000, isFavorite: false },
+            { symbol: 'DOT/USDT', name: 'Polkadot', price: 6.78, change24h: 1.23, volume: 270000000, isFavorite: false },
+            { symbol: 'ATOM/USDT', name: 'Cosmos', price: 10.45, change24h: 4.67, volume: 180000000, isFavorite: false }
+        ];
+
+        // Trading Pairs Manager
+        class TradingPairsManager {
+            constructor() {
+                this.pairs = tradingPairs;
+                this.currentFilter = 'all';
+                this.searchQuery = '';
+                this.activePair = 'BTC/USDT';
+                
+                this.init();
+            }
+
+            init() {
+                this.renderPairs();
+                this.setupEventListeners();
+                this.loadFavorites();
+            }
+
+            setupEventListeners() {
+                // Search functionality
+                const searchInput = document.getElementById('market-search');
+                if (searchInput) {
+                    searchInput.addEventListener('input', (e) => {
+                        this.searchQuery = e.target.value.toLowerCase();
+                        this.renderPairs();
+                    });
+                }
+
+                // Filter buttons
+                document.querySelectorAll('.market-filter-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        this.currentFilter = e.target.dataset.filter;
+                        
+                        // Update button styles
+                        document.querySelectorAll('.market-filter-btn').forEach(b => {
+                            b.classList.remove('bg-emerald-500/10', 'text-emerald-400', 'border-emerald-500/30');
+                            b.classList.add('text-zinc-500', 'border-zinc-800');
+                        });
+                        e.target.classList.remove('text-zinc-500', 'border-zinc-800');
+                        e.target.classList.add('bg-emerald-500/10', 'text-emerald-400', 'border-emerald-500/30');
+                        
+                        this.renderPairs();
+                    });
+                });
+            }
+
+            loadFavorites() {
+                const favorites = JSON.parse(localStorage.getItem('tradingFavorites') || '[]');
+                this.pairs.forEach(pair => {
+                    pair.isFavorite = favorites.includes(pair.symbol);
+                });
+            }
+
+            saveFavorites() {
+                const favorites = this.pairs.filter(p => p.isFavorite).map(p => p.symbol);
+                localStorage.setItem('tradingFavorites', JSON.stringify(favorites));
+            }
+
+            toggleFavorite(symbol) {
+                const pair = this.pairs.find(p => p.symbol === symbol);
+                if (pair) {
+                    pair.isFavorite = !pair.isFavorite;
+                    this.saveFavorites();
+                    this.renderPairs();
+                }
+            }
+
+            selectPair(symbol) {
+                this.activePair = symbol;
+                const pair = this.pairs.find(p => p.symbol === symbol);
+                if (pair) {
+                    // Update header with selected pair
+                    document.getElementById('active-pair-name').textContent = symbol;
+                    document.getElementById('current-price').textContent = `$${pair.price.toLocaleString()}`;
+                    
+                    const priceChangeValue = (pair.price * pair.change24h / 100);
+                    document.getElementById('price-change').textContent = `${pair.change24h >= 0 ? '+' : ''}$${Math.abs(priceChangeValue).toFixed(2)}`;
+                    document.getElementById('price-change-percent').textContent = `${pair.change24h >= 0 ? '+' : ''}${pair.change24h.toFixed(2)}%`;
+                    
+                    // Update colors based on positive/negative change
+                    const colorClass = pair.change24h >= 0 ? 'text-emerald-400' : 'text-red-400';
+                    document.getElementById('current-price').className = `text-xl font-bold ${colorClass}`;
+                    document.getElementById('price-change').className = `${colorClass} text-xs`;
+                    document.getElementById('price-change-percent').className = `${colorClass} text-xs`;
+                    
+                    // Update 24h stats (mock data based on pair)
+                    const high = pair.price * 1.05;
+                    const low = pair.price * 0.95;
+                    document.getElementById('high-24h').textContent = `$${high.toFixed(2)}`;
+                    document.getElementById('low-24h').textContent = `$${low.toFixed(2)}`;
+                    document.getElementById('volume-24h').textContent = `$${(pair.volume / 1000000000).toFixed(2)}B`;
+                }
+                
+                this.renderPairs();
+            }
+
+            getFilteredPairs() {
+                let filtered = this.pairs;
+
+                // Apply search filter
+                if (this.searchQuery) {
+                    filtered = filtered.filter(pair => 
+                        pair.symbol.toLowerCase().includes(this.searchQuery) ||
+                        pair.name.toLowerCase().includes(this.searchQuery)
+                    );
+                }
+
+                // Apply category filter
+                switch (this.currentFilter) {
+                    case 'favorites':
+                        filtered = filtered.filter(pair => pair.isFavorite);
+                        break;
+                    case 'gainers':
+                        filtered = filtered.filter(pair => pair.change24h > 0);
+                        filtered.sort((a, b) => b.change24h - a.change24h);
+                        break;
+                    default:
+                        // Sort by volume for 'all'
+                        filtered.sort((a, b) => b.volume - a.volume);
+                }
+
+                return filtered;
+            }
+
+            renderPairs() {
+                const container = document.getElementById('trading-pairs-list');
+                if (!container) return;
+
+                const filtered = this.getFilteredPairs();
+
+                if (filtered.length === 0) {
+                    container.innerHTML = `
+                        <div class="px-3 py-8 text-center text-zinc-600 text-xs">
+                            No pairs found
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = filtered.map(pair => {
+                    const isPositive = pair.change24h >= 0;
+                    const changeColor = isPositive ? 'text-emerald-400' : 'text-red-400';
+                    const bgColor = pair.symbol === this.activePair ? 'bg-zinc-900' : '';
+                    
+                    return `
+                        <div class="trading-pair-item px-3 py-2 hover:bg-zinc-900 cursor-pointer transition-colors ${bgColor}" data-symbol="${pair.symbol}">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2 flex-1 min-w-0">
+                                    <button class="favorite-btn text-xs hover:scale-110 transition-transform" data-symbol="${pair.symbol}">
+                                        ${pair.isFavorite ? '⭐' : '☆'}
+                                    </button>
+                                    <div class="min-w-0 flex-1">
+                                        <div class="text-xs font-semibold truncate">${pair.symbol}</div>
+                                        <div class="text-[10px] text-zinc-500 truncate">${pair.name}</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-xs font-semibold font-mono">$${pair.price < 1 ? pair.price.toFixed(4) : pair.price.toLocaleString()}</div>
+                                    <div class="text-[10px] font-semibold ${changeColor}">
+                                        ${isPositive ? '↑' : '↓'} ${Math.abs(pair.change24h).toFixed(2)}%
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                // Add event listeners to rendered pairs
+                container.querySelectorAll('.trading-pair-item').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        if (!e.target.classList.contains('favorite-btn')) {
+                            this.selectPair(item.dataset.symbol);
+                        }
+                    });
+                });
+
+                container.querySelectorAll('.favorite-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        this.toggleFavorite(btn.dataset.symbol);
+                    });
+                });
+            }
+        }
+
+        // Trading Chart Implementation
+        class TradingChart {
+            constructor(canvasId) {
+                this.canvas = document.getElementById(canvasId);
+                this.ctx = this.canvas.getContext('2d');
+                this.data = [];
+                this.visibleData = [];
+                this.indicators = {
+                    ma7: [],
+                    ma25: [],
+                    ma99: []
+                };
+                this.offset = 0;
+                this.candleWidth = 8;
+                this.candleSpacing = 2;
+                this.chartPadding = { top: 20, right: 80, bottom: 80, left: 60 };
+                this.volumeHeight = 60;
+                this.priceRange = { min: 0, max: 0 };
+                this.volumeMax = 0;
+                this.crosshair = { x: null, y: null };
+                
+                this.initCanvas();
+                this.generateDummyData();
+                this.calculateIndicators();
+                this.setupEventListeners();
+                this.draw();
+            }
+
+            initCanvas() {
+                const rect = this.canvas.getBoundingClientRect();
+                this.canvas.width = rect.width * window.devicePixelRatio;
+                this.canvas.height = rect.height * window.devicePixelRatio;
+                this.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+                this.width = rect.width;
+                this.height = rect.height;
+            }
+
+            generateDummyData() {
+                const now = Date.now();
+                const oneHour = 3600000;
+                let basePrice = 43000;
+                
+                // Generate 100 candlesticks with realistic price action
+                for (let i = 99; i >= 0; i--) {
+                    const time = now - (i * oneHour);
+                    const volatility = 100 + Math.random() * 200;
+                    
+                    // Random walk with trend
+                    const trend = Math.sin(i / 10) * 50;
+                    basePrice += (Math.random() - 0.48) * volatility + trend;
+                    
+                    const open = basePrice;
+                    const high = open + Math.random() * volatility;
+                    const low = open - Math.random() * volatility;
+                    const close = low + Math.random() * (high - low);
+                    const volume = 100000000 + Math.random() * 200000000;
+                    
+                    this.data.push({
+                        time,
+                        open,
+                        high,
+                        low,
+                        close,
+                        volume
+                    });
+                }
+
+                // Update market stats
+                const lastCandle = this.data[this.data.length - 1];
+                const firstCandle = this.data[0];
+                const priceChange = lastCandle.close - firstCandle.open;
+                const priceChangePercent = (priceChange / firstCandle.open * 100).toFixed(2);
+                
+                const high24h = Math.max(...this.data.map(d => d.high));
+                const low24h = Math.min(...this.data.map(d => d.low));
+                const volume24h = this.data.reduce((sum, d) => sum + d.volume, 0);
+
+                document.getElementById('current-price').textContent = `$${lastCandle.close.toFixed(2)}`;
+                document.getElementById('current-price').className = `text-xl font-bold ${priceChange >= 0 ? 'text-emerald-400' : 'text-red-400'}`;
+                document.getElementById('price-change').textContent = `${priceChange >= 0 ? '+' : ''}$${Math.abs(priceChange).toFixed(2)}`;
+                document.getElementById('price-change').className = `text-xs ${priceChange >= 0 ? 'text-emerald-400' : 'text-red-400'}`;
+                document.getElementById('price-change-percent').textContent = `${priceChange >= 0 ? '+' : ''}${priceChangePercent}%`;
+                document.getElementById('price-change-percent').className = `text-xs ${priceChange >= 0 ? 'text-emerald-400' : 'text-red-400'}`;
+                document.getElementById('high-24h').textContent = `$${high24h.toFixed(2)}`;
+                document.getElementById('low-24h').textContent = `$${low24h.toFixed(2)}`;
+                document.getElementById('volume-24h').textContent = `$${(volume24h / 1000000000).toFixed(2)}B`;
+            }
+
+            calculateIndicators() {
+                // Calculate moving averages
+                const periods = [7, 25, 99];
+                periods.forEach(period => {
+                    const ma = [];
+                    for (let i = 0; i < this.data.length; i++) {
+                        if (i < period - 1) {
+                            ma.push(null);
+                        } else {
+                            let sum = 0;
+                            for (let j = 0; j < period; j++) {
+                                sum += this.data[i - j].close;
+                            }
+                            ma.push(sum / period);
+                        }
+                    }
+                    this[`ma${period}`] = ma;
+                    this.indicators[`ma${period}`] = ma;
+                });
+            }
+
+            setupEventListeners() {
+                this.canvas.addEventListener('mousemove', (e) => {
+                    const rect = this.canvas.getBoundingClientRect();
+                    this.crosshair.x = e.clientX - rect.left;
+                    this.crosshair.y = e.clientY - rect.top;
+                    this.draw();
+                    this.updateTooltip(e);
+                });
+
+                this.canvas.addEventListener('mouseleave', () => {
+                    this.crosshair.x = null;
+                    this.crosshair.y = null;
+                    document.getElementById('chart-tooltip').classList.add('hidden');
+                    this.draw();
+                });
+
+                this.canvas.addEventListener('wheel', (e) => {
+                    e.preventDefault();
+                    const delta = e.deltaY > 0 ? 1 : -1;
+                    this.candleWidth = Math.max(4, Math.min(20, this.candleWidth + delta));
+                    this.draw();
+                });
+
+                window.addEventListener('resize', () => {
+                    this.initCanvas();
+                    this.draw();
+                });
+            }
+
+            updateTooltip(e) {
+                const rect = this.canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const chartWidth = this.width - this.chartPadding.left - this.chartPadding.right;
+                const candleFullWidth = this.candleWidth + this.candleSpacing;
+                const maxVisible = Math.floor(chartWidth / candleFullWidth);
+                const startIndex = Math.max(0, this.data.length - maxVisible - this.offset);
+                const index = Math.floor((x - this.chartPadding.left) / candleFullWidth) + startIndex;
+
+                if (index >= 0 && index < this.data.length) {
+                    const candle = this.data[index];
+                    const tooltip = document.getElementById('chart-tooltip');
+                    
+                    document.getElementById('tooltip-time').textContent = new Date(candle.time).toLocaleString();
+                    document.getElementById('tooltip-open').textContent = candle.open.toFixed(2);
+                    document.getElementById('tooltip-high').textContent = candle.high.toFixed(2);
+                    document.getElementById('tooltip-low').textContent = candle.low.toFixed(2);
+                    document.getElementById('tooltip-close').textContent = candle.close.toFixed(2);
+                    document.getElementById('tooltip-volume').textContent = (candle.volume / 1000000).toFixed(2) + 'M';
+                    
+                    tooltip.style.left = Math.min(e.clientX + 15, rect.width - 200) + 'px';
+                    tooltip.style.top = Math.min(e.clientY + 15, rect.height - 150) + 'px';
+                    tooltip.classList.remove('hidden');
+                }
+            }
+
+            draw() {
+                // Clear canvas
+                this.ctx.fillStyle = '#09090b';
+                this.ctx.fillRect(0, 0, this.width, this.height);
+
+                // Calculate visible data range
+                const chartWidth = this.width - this.chartPadding.left - this.chartPadding.right;
+                const candleFullWidth = this.candleWidth + this.candleSpacing;
+                const maxVisible = Math.floor(chartWidth / candleFullWidth);
+                const startIndex = Math.max(0, this.data.length - maxVisible - this.offset);
+                const endIndex = Math.min(this.data.length, startIndex + maxVisible);
+                this.visibleData = this.data.slice(startIndex, endIndex);
+
+                // Calculate price range
+                this.priceRange.min = Math.min(...this.visibleData.map(d => d.low));
+                this.priceRange.max = Math.max(...this.visibleData.map(d => d.high));
+                this.volumeMax = Math.max(...this.visibleData.map(d => d.volume));
+
+                // Add padding to price range
+                const pricePadding = (this.priceRange.max - this.priceRange.min) * 0.1;
+                this.priceRange.min -= pricePadding;
+                this.priceRange.max += pricePadding;
+
+                // Draw grid
+                this.drawGrid();
+
+                // Draw volume bars
+                this.drawVolume(startIndex);
+
+                // Draw indicators
+                this.drawIndicators(startIndex);
+
+                // Draw candlesticks
+                this.drawCandlesticks();
+
+                // Draw crosshair
+                if (this.crosshair.x !== null && this.crosshair.y !== null) {
+                    this.drawCrosshair();
+                }
+
+                // Draw price axis
+                this.drawPriceAxis();
+            }
+
+            drawGrid() {
+                const chartHeight = this.height - this.chartPadding.top - this.chartPadding.bottom - this.volumeHeight;
+                const gridLines = 8;
+
+                this.ctx.strokeStyle = '#27272a';
+                this.ctx.lineWidth = 1;
+
+                for (let i = 0; i <= gridLines; i++) {
+                    const y = this.chartPadding.top + (chartHeight / gridLines) * i;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(this.chartPadding.left, y);
+                    this.ctx.lineTo(this.width - this.chartPadding.right, y);
+                    this.ctx.stroke();
+                }
+            }
+
+            drawCandlesticks() {
+                const chartHeight = this.height - this.chartPadding.top - this.chartPadding.bottom - this.volumeHeight;
+                
+                this.visibleData.forEach((candle, i) => {
+                    const x = this.chartPadding.left + i * (this.candleWidth + this.candleSpacing);
+                    const openY = this.chartPadding.top + (1 - (candle.open - this.priceRange.min) / (this.priceRange.max - this.priceRange.min)) * chartHeight;
+                    const closeY = this.chartPadding.top + (1 - (candle.close - this.priceRange.min) / (this.priceRange.max - this.priceRange.min)) * chartHeight;
+                    const highY = this.chartPadding.top + (1 - (candle.high - this.priceRange.min) / (this.priceRange.max - this.priceRange.min)) * chartHeight;
+                    const lowY = this.chartPadding.top + (1 - (candle.low - this.priceRange.min) / (this.priceRange.max - this.priceRange.min)) * chartHeight;
+
+                    const isGreen = candle.close >= candle.open;
+                    const color = isGreen ? '#10b981' : '#ef4444';
+
+                    // Draw wick
+                    this.ctx.strokeStyle = color;
+                    this.ctx.lineWidth = 1;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(x + this.candleWidth / 2, highY);
+                    this.ctx.lineTo(x + this.candleWidth / 2, lowY);
+                    this.ctx.stroke();
+
+                    // Draw body
+                    this.ctx.fillStyle = color;
+                    const bodyHeight = Math.abs(closeY - openY);
+                    const bodyY = Math.min(openY, closeY);
+                    this.ctx.fillRect(x, bodyY, this.candleWidth, Math.max(1, bodyHeight));
+                });
+            }
+
+            drawVolume(startIndex) {
+                const volumeY = this.height - this.chartPadding.bottom;
+                
+                this.visibleData.forEach((candle, i) => {
+                    const x = this.chartPadding.left + i * (this.candleWidth + this.candleSpacing);
+                    const volumeRatio = candle.volume / this.volumeMax;
+                    const barHeight = volumeRatio * this.volumeHeight;
+                    const isGreen = candle.close >= candle.open;
+                    
+                    this.ctx.fillStyle = isGreen ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)';
+                    this.ctx.fillRect(x, volumeY - barHeight, this.candleWidth, barHeight);
+                });
+            }
+
+            drawIndicators(startIndex) {
+                const chartHeight = this.height - this.chartPadding.top - this.chartPadding.bottom - this.volumeHeight;
+                const indicators = [
+                    { data: this.ma7, color: '#3b82f6', name: 'MA7' },
+                    { data: this.ma25, color: '#f59e0b', name: 'MA25' },
+                    { data: this.ma99, color: '#8b5cf6', name: 'MA99' }
+                ];
+
+                indicators.forEach(indicator => {
+                    this.ctx.strokeStyle = indicator.color;
+                    this.ctx.lineWidth = 1.5;
+                    this.ctx.beginPath();
+
+                    let firstPoint = true;
+                    this.visibleData.forEach((candle, i) => {
+                        const globalIndex = startIndex + i;
+                        const maValue = indicator.data[globalIndex];
+                        
+                        if (maValue !== null && maValue !== undefined) {
+                            const x = this.chartPadding.left + i * (this.candleWidth + this.candleSpacing) + this.candleWidth / 2;
+                            const y = this.chartPadding.top + (1 - (maValue - this.priceRange.min) / (this.priceRange.max - this.priceRange.min)) * chartHeight;
+                            
+                            if (firstPoint) {
+                                this.ctx.moveTo(x, y);
+                                firstPoint = false;
+                            } else {
+                                this.ctx.lineTo(x, y);
+                            }
+                        }
+                    });
+
+                    this.ctx.stroke();
+                });
+            }
+
+            drawPriceAxis() {
+                const chartHeight = this.height - this.chartPadding.top - this.chartPadding.bottom - this.volumeHeight;
+                const priceSteps = 8;
+
+                this.ctx.fillStyle = '#71717a';
+                this.ctx.font = '10px monospace';
+                this.ctx.textAlign = 'left';
+
+                for (let i = 0; i <= priceSteps; i++) {
+                    const price = this.priceRange.min + (this.priceRange.max - this.priceRange.min) * (i / priceSteps);
+                    const y = this.chartPadding.top + chartHeight - (chartHeight / priceSteps) * i;
+                    this.ctx.fillText('$' + price.toFixed(0), this.width - this.chartPadding.right + 5, y + 3);
+                }
+            }
+
+            drawCrosshair() {
+                this.ctx.strokeStyle = '#52525b';
+                this.ctx.lineWidth = 1;
+                this.ctx.setLineDash([4, 4]);
+
+                // Vertical line
+                this.ctx.beginPath();
+                this.ctx.moveTo(this.crosshair.x, this.chartPadding.top);
+                this.ctx.lineTo(this.crosshair.x, this.height - this.chartPadding.bottom);
+                this.ctx.stroke();
+
+                // Horizontal line
+                this.ctx.beginPath();
+                this.ctx.moveTo(this.chartPadding.left, this.crosshair.y);
+                this.ctx.lineTo(this.width - this.chartPadding.right, this.crosshair.y);
+                this.ctx.stroke();
+
+                this.ctx.setLineDash([]);
+            }
+        }
+
+        // Initialize everything when DOM is loaded
+        window.addEventListener('DOMContentLoaded', () => {
+            const pairsManager = new TradingPairsManager();
+            const chart = new TradingChart('trading-chart');
+
+            // Timeframe buttons
+            document.querySelectorAll('.timeframe-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.timeframe-btn').forEach(b => {
+                        b.classList.remove('border-emerald-500', 'bg-emerald-500/10', 'text-emerald-400', 'active');
+                        b.classList.add('border-zinc-800');
+                    });
+                    btn.classList.remove('border-zinc-800');
+                    btn.classList.add('border-emerald-500', 'bg-emerald-500/10', 'text-emerald-400', 'active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
