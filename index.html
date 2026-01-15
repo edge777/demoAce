@@ -10,10 +10,19 @@
     
     <!-- Navigation -->
     <nav class="fixed top-0 w-full z-50 border-b border-zinc-800 bg-zinc-950">
-        <div class="max-w-full px-4 py-2.5 flex items-center justify-between">
+        <div class="max-w-full px-3 md:px-4 py-2 md:py-2.5 flex items-center justify-between">
+            <button id="mobile-pairs-btn" class="lg:hidden p-1.5 border border-zinc-800 rounded hover:bg-zinc-900 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+            </button>
+            
             <a href="#" class="flex items-center gap-2">
-                <img src="assets/images/IMG_20260115_133429_460-1768464368957.jpg" alt="AceCoin logo" class="h-8 w-8 object-cover rounded">
-                <span class="text-sm font-semibold tracking-tight">AsiaCoin</span>
+                <img src="assets/images/IMG_20260115_133429_460-1768464368957.jpg" alt="AceCoin logo" class="h-7 w-7 md:h-8 md:w-8 object-cover rounded">
+                <span class="text-xs md:text-sm font-semibold tracking-tight">AsiaCoin</span>
             </a>
             
             <div class="hidden md:flex items-center gap-6 text-xs font-medium">
@@ -27,7 +36,7 @@
             </div>
 
             <button id="mobile-menu-btn" class="md:hidden p-1.5 border border-zinc-800 rounded">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M4 6h16M4 12h16M4 18h16"></path>
                 </svg>
             </button>
@@ -47,14 +56,72 @@
     </nav>
 
     <!-- Hero Section -->
-<section class="min-h-screen pt-14 bg-zinc-950">
-    <div class="h-[calc(100vh-3.5rem)] flex flex-col">
+<section class="min-h-screen pt-12 md:pt-14 pb-14 md:pb-0 bg-zinc-950">
+    <div class="h-[calc(100vh-3rem)] md:h-[calc(100vh-3.5rem)] flex flex-col">
         
+        <!-- Mobile Trading Pairs Drawer Overlay -->
+        <div id="mobile-pairs-overlay" class="fixed inset-0 bg-black/60 z-40 hidden lg:hidden">
+            <div id="mobile-pairs-drawer" class="absolute left-0 top-0 bottom-0 w-80 max-w-[85vw] bg-zinc-950 border-r border-zinc-800 transform -translate-x-full transition-transform duration-300">
+                <!-- Drawer Header -->
+                <div class="px-4 py-3 border-b border-zinc-800 flex items-center justify-between">
+                    <h3 class="text-sm font-semibold">Markets</h3>
+                    <button id="close-pairs-drawer" class="p-1.5 hover:bg-zinc-900 rounded transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 6L6 18M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="px-4 py-3 border-b border-zinc-800">
+                    <div class="relative mb-3">
+                        <input 
+                            type="text" 
+                            id="mobile-market-search" 
+                            placeholder="Search pairs..." 
+                            class="w-full bg-zinc-900 border border-zinc-800 rounded px-3 py-2 text-sm outline-none focus:border-emerald-500 transition-colors pl-9"
+                        >
+                        <svg class="absolute left-3 top-2.5 w-4 h-4 text-zinc-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+
+                    <!-- Filter Tabs -->
+                    <div class="flex gap-2">
+                        <button class="mobile-market-filter-btn flex-1 px-3 py-1.5 text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded" data-filter="all">
+                            All
+                        </button>
+                        <button class="mobile-market-filter-btn flex-1 px-3 py-1.5 text-xs font-semibold text-zinc-500 border border-zinc-800 rounded hover:bg-zinc-900 transition-colors" data-filter="favorites">
+                            ⭐ Fav
+                        </button>
+                        <button class="mobile-market-filter-btn flex-1 px-3 py-1.5 text-xs font-semibold text-zinc-500 border border-zinc-800 rounded hover:bg-zinc-900 transition-colors" data-filter="gainers">
+                            🔥 Top
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Trading Pairs List -->
+                <div class="flex-1 overflow-y-auto">
+                    <!-- Column Headers -->
+                    <div class="sticky top-0 bg-zinc-950 px-4 py-2 border-b border-zinc-800 flex items-center justify-between text-xs text-zinc-500 font-semibold">
+                        <span>Pair</span>
+                        <span>Price</span>
+                        <span>24h %</span>
+                    </div>
+
+                    <!-- Trading Pairs -->
+                    <div id="mobile-trading-pairs-list" class="divide-y divide-zinc-900">
+                        <!-- Pairs will be dynamically inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Trading Platform Layout -->
         <div class="flex-1 grid grid-cols-1 lg:grid-cols-12 border-t border-zinc-800">
             
-            <!-- LEFT SIDEBAR: Trading Pairs -->
-            <div class="lg:col-span-2 flex flex-col border-r border-zinc-800 bg-zinc-950 hidden lg:flex">
+            <!-- LEFT SIDEBAR: Trading Pairs (Desktop Only) -->
+            <div class="hidden lg:flex lg:col-span-2 flex-col border-r border-zinc-800 bg-zinc-950">
                 <!-- Sidebar Header -->
                 <div class="px-3 py-3 border-b border-zinc-800">
                     <h3 class="text-xs font-semibold mb-3">Markets</h3>
@@ -102,220 +169,300 @@
                 </div>
             </div>
 
-            <!-- CENTER: Chart Section (7 columns) -->
-            <div class="lg:col-span-7 flex flex-col border-r border-zinc-800">
+            <!-- CENTER & RIGHT: Main Content Area -->
+            <div class="lg:col-span-10 flex flex-col">
                 
                 <!-- Market Header -->
-                <div class="border-b border-zinc-800 px-4 py-3 flex items-center justify-between">
-                    <div class="flex items-center gap-6">
-                        <div>
-                            <div class="flex items-center gap-2">
-                                <h3 id="active-pair-name" class="text-lg font-bold">BTC/USDT</h3>
-                                <span class="text-xs text-zinc-500">Spot</span>
+                <div class="border-b border-zinc-800 px-3 md:px-4 py-2 md:py-3">
+                    <div class="flex items-center justify-between mb-2 md:mb-0">
+                        <div class="flex items-center gap-3 md:gap-6 flex-1 min-w-0">
+                            <div class="min-w-0">
+                                <div class="flex items-center gap-2">
+                                    <h3 id="active-pair-name" class="text-sm md:text-lg font-bold truncate">BTC/USDT</h3>
+                                    <span class="text-[10px] md:text-xs text-zinc-500">Spot</span>
+                                </div>
+                                <div class="flex items-baseline gap-1 md:gap-2 mt-0.5">
+                                    <span id="current-price" class="text-base md:text-xl font-bold text-emerald-400">$43,821.50</span>
+                                    <span id="price-change" class="text-emerald-400 text-[10px] md:text-xs">+$1,234.50</span>
+                                    <span id="price-change-percent" class="text-emerald-400 text-[10px] md:text-xs">+2.34%</span>
+                                </div>
                             </div>
-                            <div class="flex items-baseline gap-2 mt-0.5">
-                                <span id="current-price" class="text-xl font-bold text-emerald-400">$43,821.50</span>
-                                <span id="price-change" class="text-emerald-400 text-xs">+$1,234.50</span>
-                                <span id="price-change-percent" class="text-emerald-400 text-xs">+2.34%</span>
+                            
+                            <div class="hidden md:flex items-center gap-6 text-xs">
+                                <div>
+                                    <div class="text-zinc-500">24h High</div>
+                                    <div id="high-24h" class="font-semibold">$44,125.00</div>
+                                </div>
+                                <div>
+                                    <div class="text-zinc-500">24h Low</div>
+                                    <div id="low-24h" class="font-semibold">$42,890.00</div>
+                                </div>
+                                <div>
+                                    <div class="text-zinc-500">24h Volume</div>
+                                    <div id="volume-24h" class="font-semibold">$2.4B</div>
+                                </div>
                             </div>
                         </div>
                         
-                        <div class="hidden md:flex items-center gap-6 text-xs">
-                            <div>
-                                <div class="text-zinc-500">24h High</div>
-                                <div id="high-24h" class="font-semibold">$44,125.00</div>
-                            </div>
-                            <div>
-                                <div class="text-zinc-500">24h Low</div>
-                                <div id="low-24h" class="font-semibold">$42,890.00</div>
-                            </div>
-                            <div>
-                                <div class="text-zinc-500">24h Volume</div>
-                                <div id="volume-24h" class="font-semibold">$2.4B</div>
-                            </div>
+                        <div class="hidden md:flex items-center gap-2">
+                            <button class="timeframe-btn px-3 py-1 text-xs border border-zinc-800 rounded hover:bg-zinc-900 transition-colors" data-timeframe="1m">1m</button>
+                            <button class="timeframe-btn px-3 py-1 text-xs border border-zinc-800 rounded hover:bg-zinc-900 transition-colors" data-timeframe="5m">5m</button>
+                            <button class="timeframe-btn px-3 py-1 text-xs border border-emerald-500 bg-emerald-500/10 text-emerald-400 rounded active" data-timeframe="1h">1h</button>
+                            <button class="timeframe-btn px-3 py-1 text-xs border border-zinc-800 rounded hover:bg-zinc-900 transition-colors" data-timeframe="4h">4h</button>
+                            <button class="timeframe-btn px-3 py-1 text-xs border border-zinc-800 rounded hover:bg-zinc-900 transition-colors" data-timeframe="1D">1D</button>
                         </div>
                     </div>
-                    
-                    <div class="flex items-center gap-2">
-                        <button class="timeframe-btn px-3 py-1 text-xs border border-zinc-800 rounded hover:bg-zinc-900 transition-colors" data-timeframe="1m">1m</button>
-                        <button class="timeframe-btn px-3 py-1 text-xs border border-zinc-800 rounded hover:bg-zinc-900 transition-colors" data-timeframe="5m">5m</button>
-                        <button class="timeframe-btn px-3 py-1 text-xs border border-emerald-500 bg-emerald-500/10 text-emerald-400 rounded active" data-timeframe="1h">1h</button>
-                        <button class="timeframe-btn px-3 py-1 text-xs border border-zinc-800 rounded hover:bg-zinc-900 transition-colors" data-timeframe="4h">4h</button>
-                        <button class="timeframe-btn px-3 py-1 text-xs border border-zinc-800 rounded hover:bg-zinc-900 transition-colors" data-timeframe="1D">1D</button>
-                    </div>
-                </div>
 
-                <!-- Chart Area -->
-                <div class="flex-1 bg-zinc-950 relative">
-                    <canvas id="trading-chart" class="w-full h-full"></canvas>
-                    <div id="chart-tooltip" class="absolute hidden bg-zinc-900 border border-zinc-800 rounded px-3 py-2 text-xs pointer-events-none z-10">
-                        <div class="space-y-1">
-                            <div class="font-semibold text-zinc-300">Time: <span id="tooltip-time"></span></div>
-                            <div class="text-emerald-400">O: <span id="tooltip-open"></span></div>
-                            <div class="text-blue-400">H: <span id="tooltip-high"></span></div>
-                            <div class="text-red-400">L: <span id="tooltip-low"></span></div>
-                            <div class="text-zinc-100">C: <span id="tooltip-close"></span></div>
-                            <div class="text-zinc-400">Vol: <span id="tooltip-volume"></span></div>
+                    <!-- Mobile 24h Stats -->
+                    <div class="flex md:hidden items-center gap-4 text-[10px] mt-2">
+                        <div>
+                            <span class="text-zinc-500">High:</span>
+                            <span id="mobile-high-24h" class="font-semibold ml-1">$44,125.00</span>
+                        </div>
+                        <div>
+                            <span class="text-zinc-500">Low:</span>
+                            <span id="mobile-low-24h" class="font-semibold ml-1">$42,890.00</span>
+                        </div>
+                        <div>
+                            <span class="text-zinc-500">Vol:</span>
+                            <span id="mobile-volume-24h" class="font-semibold ml-1">$2.4B</span>
                         </div>
                     </div>
-                </div>
 
-                <!-- Bottom Trading Panel -->
-                <div class="border-t border-zinc-800 bg-zinc-950">
-                    <div class="flex items-center gap-2 px-4 py-2 border-b border-zinc-800">
-                        <button class="px-3 py-1.5 text-xs font-medium text-white bg-zinc-900 rounded">Open Orders (0)</button>
-                        <button class="px-3 py-1.5 text-xs font-medium text-zinc-500 hover:text-white transition-colors">Order History</button>
-                        <button class="px-3 py-1.5 text-xs font-medium text-zinc-500 hover:text-white transition-colors">Trade History</button>
-                    </div>
-                    <div class="px-4 py-8 text-center text-zinc-600 text-sm">
-                        No open orders
+                    <!-- Mobile Timeframe Selector -->
+                    <div class="flex md:hidden items-center gap-1 mt-2 overflow-x-auto pb-1">
+                        <button class="mobile-timeframe-btn flex-shrink-0 px-3 py-1 text-[10px] border border-zinc-800 rounded hover:bg-zinc-900 transition-colors" data-timeframe="1m">1m</button>
+                        <button class="mobile-timeframe-btn flex-shrink-0 px-3 py-1 text-[10px] border border-zinc-800 rounded hover:bg-zinc-900 transition-colors" data-timeframe="5m">5m</button>
+                        <button class="mobile-timeframe-btn flex-shrink-0 px-3 py-1 text-[10px] border border-emerald-500 bg-emerald-500/10 text-emerald-400 rounded active" data-timeframe="1h">1h</button>
+                        <button class="mobile-timeframe-btn flex-shrink-0 px-3 py-1 text-[10px] border border-zinc-800 rounded hover:bg-zinc-900 transition-colors" data-timeframe="4h">4h</button>
+                        <button class="mobile-timeframe-btn flex-shrink-0 px-3 py-1 text-[10px] border border-zinc-800 rounded hover:bg-zinc-900 transition-colors" data-timeframe="1D">1D</button>
                     </div>
                 </div>
-            </div>
 
-            <!-- RIGHT: Order Book + Trading Panel (3 columns) -->
-            <div class="lg:col-span-3 flex flex-col bg-zinc-950">
-                
-                <!-- Order Book -->
+                <!-- Content Area with Mobile Tabs -->
                 <div class="flex-1 flex flex-col overflow-hidden">
-                    <div class="px-3 py-2 border-b border-zinc-800">
-                        <h3 class="text-xs font-semibold">Order Book</h3>
-                    </div>
                     
-                    <div class="flex-1 overflow-y-auto">
-                        <!-- Sell Orders -->
-                        <div class="px-3 py-2">
-                            <div class="text-[10px] text-zinc-500 mb-2 flex justify-between">
-                                <span>Price(USDT)</span>
-                                <span>Amount</span>
+                    <!-- Chart Panel (Always Visible on Desktop, Switchable on Mobile) -->
+                    <div id="chart-panel" class="flex-1 flex flex-col lg:grid lg:grid-cols-10">
+                        
+                        <!-- Chart Section -->
+                        <div class="lg:col-span-7 flex-1 flex flex-col lg:border-r border-zinc-800">
+                            <!-- Chart Area -->
+                            <div class="flex-1 bg-zinc-950 relative">
+                                <canvas id="trading-chart" class="w-full h-full"></canvas>
+                                <div id="chart-tooltip" class="absolute hidden bg-zinc-900 border border-zinc-800 rounded px-3 py-2 text-xs pointer-events-none z-10">
+                                    <div class="space-y-1">
+                                        <div class="font-semibold text-zinc-300">Time: <span id="tooltip-time"></span></div>
+                                        <div class="text-emerald-400">O: <span id="tooltip-open"></span></div>
+                                        <div class="text-blue-400">H: <span id="tooltip-high"></span></div>
+                                        <div class="text-red-400">L: <span id="tooltip-low"></span></div>
+                                        <div class="text-zinc-100">C: <span id="tooltip-close"></span></div>
+                                        <div class="text-zinc-400">Vol: <span id="tooltip-volume"></span></div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="space-y-0.5 font-mono text-[11px]">
-                                <div class="flex justify-between text-red-400 hover:bg-red-500/5 px-1 py-0.5 rounded cursor-pointer">
-                                    <span>43,828.00</span>
-                                    <span>0.234</span>
+
+                            <!-- Bottom Trading Panel (Desktop Only) -->
+                            <div class="hidden lg:block border-t border-zinc-800 bg-zinc-950">
+                                <div class="flex items-center gap-2 px-4 py-2 border-b border-zinc-800">
+                                    <button class="px-3 py-1.5 text-xs font-medium text-white bg-zinc-900 rounded">Open Orders (0)</button>
+                                    <button class="px-3 py-1.5 text-xs font-medium text-zinc-500 hover:text-white transition-colors">Order History</button>
+                                    <button class="px-3 py-1.5 text-xs font-medium text-zinc-500 hover:text-white transition-colors">Trade History</button>
                                 </div>
-                                <div class="flex justify-between text-red-400 hover:bg-red-500/5 px-1 py-0.5 rounded cursor-pointer">
-                                    <span>43,827.50</span>
-                                    <span>0.567</span>
-                                </div>
-                                <div class="flex justify-between text-red-400 hover:bg-red-500/5 px-1 py-0.5 rounded cursor-pointer">
-                                    <span>43,827.00</span>
-                                    <span>1.123</span>
-                                </div>
-                                <div class="flex justify-between text-red-400 hover:bg-red-500/5 px-1 py-0.5 rounded cursor-pointer">
-                                    <span>43,826.50</span>
-                                    <span>0.891</span>
-                                </div>
-                                <div class="flex justify-between text-red-400 hover:bg-red-500/5 px-1 py-0.5 rounded cursor-pointer">
-                                    <span>43,826.00</span>
-                                    <span>2.345</span>
-                                </div>
-                                <div class="flex justify-between text-red-400 hover:bg-red-500/5 px-1 py-0.5 rounded cursor-pointer">
-                                    <span>43,825.50</span>
-                                    <span>0.678</span>
-                                </div>
-                                <div class="flex justify-between text-red-400 hover:bg-red-500/5 px-1 py-0.5 rounded cursor-pointer">
-                                    <span>43,825.00</span>
-                                    <span>1.456</span>
-                                </div>
-                                <div class="flex justify-between text-red-400 hover:bg-red-500/5 px-1 py-0.5 rounded cursor-pointer">
-                                    <span>43,824.50</span>
-                                    <span>0.234</span>
-                                </div>
-                                <div class="flex justify-between text-red-400 hover:bg-red-500/5 px-1 py-0.5 rounded cursor-pointer">
-                                    <span>43,824.00</span>
-                                    <span>3.567</span>
+                                <div class="px-4 py-8 text-center text-zinc-600 text-sm">
+                                    No open orders
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Current Price -->
-                        <div class="px-3 py-2 bg-emerald-500/5 border-y border-emerald-500/20">
-                            <div class="flex items-center justify-between">
-                                <span class="text-base font-bold text-emerald-400">43,821.50</span>
-                                <span class="text-[10px] text-emerald-400">↑ $125.30</span>
-                            </div>
-                        </div>
+                        <!-- Order Book Section (Desktop) / Hidden on Mobile -->
+                        <div class="hidden lg:flex lg:col-span-3 flex-col bg-zinc-950">
+                            <div class="flex-1 flex flex-col overflow-hidden">
+                                <div class="px-3 py-2 border-b border-zinc-800">
+                                    <h3 class="text-xs font-semibold">Order Book</h3>
+                                </div>
+                                
+                                <div class="flex-1 overflow-y-auto">
+                                    <!-- Sell Orders -->
+                                    <div class="px-3 py-2">
+                                        <div class="text-[10px] text-zinc-500 mb-2 flex justify-between">
+                                            <span>Price(USDT)</span>
+                                            <span>Amount</span>
+                                        </div>
+                                        <div class="space-y-0.5 font-mono text-[11px]" id="desktop-sell-orders">
+                                            <!-- Sell orders will be inserted here -->
+                                        </div>
+                                    </div>
 
-                        <!-- Buy Orders -->
-                        <div class="px-3 py-2">
-                            <div class="space-y-0.5 font-mono text-[11px]">
-                                <div class="flex justify-between text-emerald-400 hover:bg-emerald-500/5 px-1 py-0.5 rounded cursor-pointer">
-                                    <span>43,821.00</span>
-                                    <span>1.234</span>
+                                    <!-- Current Price -->
+                                    <div class="px-3 py-2 bg-emerald-500/5 border-y border-emerald-500/20">
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-base font-bold text-emerald-400">43,821.50</span>
+                                            <span class="text-[10px] text-emerald-400">↑ $125.30</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Buy Orders -->
+                                    <div class="px-3 py-2">
+                                        <div class="space-y-0.5 font-mono text-[11px]" id="desktop-buy-orders">
+                                            <!-- Buy orders will be inserted here -->
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="flex justify-between text-emerald-400 hover:bg-emerald-500/5 px-1 py-0.5 rounded cursor-pointer">
-                                    <span>43,820.50</span>
-                                    <span>2.567</span>
+                            </div>
+
+                            <!-- Trading Panel (Desktop) -->
+                            <div class="border-t border-zinc-800 p-3">
+                                <div class="flex gap-1 mb-3">
+                                    <button class="flex-1 py-1.5 text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded">Buy</button>
+                                    <button class="flex-1 py-1.5 text-xs font-semibold text-zinc-500 hover:text-white border border-zinc-800 rounded transition-colors">Sell</button>
                                 </div>
-                                <div class="flex justify-between text-emerald-400 hover:bg-emerald-500/5 px-1 py-0.5 rounded cursor-pointer">
-                                    <span>43,820.00</span>
-                                    <span>0.891</span>
+
+                                <div class="space-y-2">
+                                    <div>
+                                        <label class="text-[10px] text-zinc-500 mb-1 block">Price</label>
+                                        <div class="bg-zinc-900 border border-zinc-800 rounded px-2 py-1.5">
+                                            <input type="text" placeholder="Market" class="bg-transparent w-full outline-none font-mono text-xs">
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label class="text-[10px] text-zinc-500 mb-1 block">Amount</label>
+                                        <div class="bg-zinc-900 border border-zinc-800 rounded px-2 py-1.5">
+                                            <input type="text" placeholder="0.00" class="bg-transparent w-full outline-none font-mono text-xs">
+                                        </div>
+                                    </div>
+
+                                    <button class="w-full py-2 bg-emerald-500 hover:bg-emerald-600 text-black text-xs font-bold rounded transition-all">
+                                        Buy BTC
+                                    </button>
                                 </div>
-                                <div class="flex justify-between text-emerald-400 hover:bg-emerald-500/5 px-1 py-0.5 rounded cursor-pointer">
-                                    <span>43,819.50</span>
-                                    <span>1.456</span>
-                                </div>
-                                <div class="flex justify-between text-emerald-400 hover:bg-emerald-500/5 px-1 py-0.5 rounded cursor-pointer">
-                                    <span>43,819.00</span>
-                                    <span>3.234</span>
-                                </div>
-                                <div class="flex justify-between text-emerald-400 hover:bg-emerald-500/5 px-1 py-0.5 rounded cursor-pointer">
-                                    <span>43,818.50</span>
-                                    <span>0.678</span>
-                                </div>
-                                <div class="flex justify-between text-emerald-400 hover:bg-emerald-500/5 px-1 py-0.5 rounded cursor-pointer">
-                                    <span>43,818.00</span>
-                                    <span>2.789</span>
-                                </div>
-                                <div class="flex justify-between text-emerald-400 hover:bg-emerald-500/5 px-1 py-0.5 rounded cursor-pointer">
-                                    <span>43,817.50</span>
-                                    <span>1.123</span>
-                                </div>
-                                <div class="flex justify-between text-emerald-400 hover:bg-emerald-500/5 px-1 py-0.5 rounded cursor-pointer">
-                                    <span>43,817.00</span>
-                                    <span>0.456</span>
+
+                                <div class="mt-3 pt-3 border-t border-zinc-800 text-[10px] text-zinc-500 space-y-1">
+                                    <div class="flex justify-between">
+                                        <span>Available</span>
+                                        <span class="text-white font-semibold">0.00 USDT</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>Max Buy</span>
+                                        <span class="text-white font-semibold">0.00 BTC</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Trading Panel -->
-                <div class="border-t border-zinc-800 p-3">
-                    <div class="flex gap-1 mb-3">
-                        <button class="flex-1 py-1.5 text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded">Buy</button>
-                        <button class="flex-1 py-1.5 text-xs font-semibold text-zinc-500 hover:text-white border border-zinc-800 rounded transition-colors">Sell</button>
-                    </div>
+                    <!-- Order Book Panel (Mobile Only) -->
+                    <div id="orderbook-panel" class="hidden flex-1 flex-col overflow-hidden bg-zinc-950 lg:hidden">
+                        <div class="px-3 py-3 border-b border-zinc-800">
+                            <h3 class="text-sm font-semibold">Order Book</h3>
+                        </div>
+                        
+                        <div class="flex-1 overflow-y-auto">
+                            <!-- Sell Orders -->
+                            <div class="px-3 py-2">
+                                <div class="text-xs text-zinc-500 mb-2 flex justify-between font-semibold">
+                                    <span>Price(USDT)</span>
+                                    <span>Amount</span>
+                                </div>
+                                <div class="space-y-1 font-mono text-sm" id="mobile-sell-orders">
+                                    <!-- Sell orders will be inserted here -->
+                                </div>
+                            </div>
 
-                    <div class="space-y-2">
-                        <div>
-                            <label class="text-[10px] text-zinc-500 mb-1 block">Price</label>
-                            <div class="bg-zinc-900 border border-zinc-800 rounded px-2 py-1.5">
-                                <input type="text" placeholder="Market" class="bg-transparent w-full outline-none font-mono text-xs">
+                            <!-- Current Price -->
+                            <div class="px-3 py-3 bg-emerald-500/5 border-y border-emerald-500/20 my-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-lg font-bold text-emerald-400">43,821.50</span>
+                                    <span class="text-xs text-emerald-400">↑ $125.30</span>
+                                </div>
+                            </div>
+
+                            <!-- Buy Orders -->
+                            <div class="px-3 py-2">
+                                <div class="space-y-1 font-mono text-sm" id="mobile-buy-orders">
+                                    <!-- Buy orders will be inserted here -->
+                                </div>
                             </div>
                         </div>
-
-                        <div>
-                            <label class="text-[10px] text-zinc-500 mb-1 block">Amount</label>
-                            <div class="bg-zinc-900 border border-zinc-800 rounded px-2 py-1.5">
-                                <input type="text" placeholder="0.00" class="bg-transparent w-full outline-none font-mono text-xs">
-                            </div>
-                        </div>
-
-                        <button class="w-full py-2 bg-emerald-500 hover:bg-emerald-600 text-black text-xs font-bold rounded transition-all">
-                            Buy BTC
-                        </button>
                     </div>
 
-                    <div class="mt-3 pt-3 border-t border-zinc-800 text-[10px] text-zinc-500 space-y-1">
-                        <div class="flex justify-between">
-                            <span>Available</span>
-                            <span class="text-white font-semibold">0.00 USDT</span>
+                    <!-- Trade Panel (Mobile Only) -->
+                    <div id="trade-panel" class="hidden flex-1 flex-col overflow-y-auto bg-zinc-950 lg:hidden">
+                        <div class="p-4">
+                            <h3 class="text-sm font-semibold mb-4">Place Order</h3>
+                            
+                            <div class="flex gap-2 mb-4">
+                                <button class="flex-1 py-2.5 text-sm font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-lg">Buy</button>
+                                <button class="flex-1 py-2.5 text-sm font-semibold text-zinc-500 hover:text-white border border-zinc-800 rounded-lg transition-colors">Sell</button>
+                            </div>
+
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="text-xs text-zinc-500 mb-2 block">Price</label>
+                                    <div class="bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-3">
+                                        <input type="text" placeholder="Market" class="bg-transparent w-full outline-none font-mono text-sm">
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="text-xs text-zinc-500 mb-2 block">Amount</label>
+                                    <div class="bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-3">
+                                        <input type="text" placeholder="0.00" class="bg-transparent w-full outline-none font-mono text-sm">
+                                    </div>
+                                </div>
+
+                                <button class="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-black text-sm font-bold rounded-lg transition-all">
+                                    Buy BTC
+                                </button>
+                            </div>
+
+                            <div class="mt-4 pt-4 border-t border-zinc-800 text-xs text-zinc-500 space-y-2">
+                                <div class="flex justify-between">
+                                    <span>Available</span>
+                                    <span class="text-white font-semibold">0.00 USDT</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Max Buy</span>
+                                    <span class="text-white font-semibold">0.00 BTC</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="flex justify-between">
-                            <span>Max Buy</span>
-                            <span class="text-white font-semibold">0.00 BTC</span>
+                    </div>
+
+                    <!-- Mobile Bottom Navigation -->
+                    <div class="lg:hidden border-t border-zinc-800 bg-zinc-950 safe-area-inset-bottom">
+                        <div class="grid grid-cols-3 divide-x divide-zinc-800">
+                            <button class="mobile-tab-btn py-3 text-xs font-semibold text-emerald-400 bg-emerald-500/5 transition-colors" data-tab="chart">
+                                <div class="flex flex-col items-center gap-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                                    </svg>
+                                    <span>Chart</span>
+                                </div>
+                            </button>
+                            <button class="mobile-tab-btn py-3 text-xs font-semibold text-zinc-500 hover:text-white transition-colors" data-tab="orderbook">
+                                <div class="flex flex-col items-center gap-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="8" y1="6" x2="21" y2="6"></line>
+                                        <line x1="8" y1="12" x2="21" y2="12"></line>
+                                        <line x1="8" y1="18" x2="21" y2="18"></line>
+                                        <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                                        <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                                        <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                                    </svg>
+                                    <span>Orders</span>
+                                </div>
+                            </button>
+                            <button class="mobile-tab-btn py-3 text-xs font-semibold text-zinc-500 hover:text-white transition-colors" data-tab="trade">
+                                <div class="flex flex-col items-center gap-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    </svg>
+                                    <span>Trade</span>
+                                </div>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -326,6 +473,150 @@
 
     <!-- Main JavaScript -->
     <script>
+        // Order Book Data
+        const orderBookData = {
+            sellOrders: [
+                { price: 43828.00, amount: 0.234 },
+                { price: 43827.50, amount: 0.567 },
+                { price: 43827.00, amount: 1.123 },
+                { price: 43826.50, amount: 0.891 },
+                { price: 43826.00, amount: 2.345 },
+                { price: 43825.50, amount: 0.678 },
+                { price: 43825.00, amount: 1.456 },
+                { price: 43824.50, amount: 0.234 },
+                { price: 43824.00, amount: 3.567 }
+            ],
+            buyOrders: [
+                { price: 43821.00, amount: 1.234 },
+                { price: 43820.50, amount: 2.567 },
+                { price: 43820.00, amount: 0.891 },
+                { price: 43819.50, amount: 1.456 },
+                { price: 43819.00, amount: 3.234 },
+                { price: 43818.50, amount: 0.678 },
+                { price: 43818.00, amount: 2.789 },
+                { price: 43817.50, amount: 1.123 },
+                { price: 43817.00, amount: 0.456 }
+            ]
+        };
+
+        // Render Order Book
+        function renderOrderBook() {
+            // Desktop Sell Orders
+            const desktopSellContainer = document.getElementById('desktop-sell-orders');
+            if (desktopSellContainer) {
+                desktopSellContainer.innerHTML = orderBookData.sellOrders.map(order => `
+                    <div class="flex justify-between text-red-400 hover:bg-red-500/5 px-1 py-0.5 rounded cursor-pointer">
+                        <span>${order.price.toLocaleString()}</span>
+                        <span>${order.amount.toFixed(3)}</span>
+                    </div>
+                `).join('');
+            }
+
+            // Desktop Buy Orders
+            const desktopBuyContainer = document.getElementById('desktop-buy-orders');
+            if (desktopBuyContainer) {
+                desktopBuyContainer.innerHTML = orderBookData.buyOrders.map(order => `
+                    <div class="flex justify-between text-emerald-400 hover:bg-emerald-500/5 px-1 py-0.5 rounded cursor-pointer">
+                        <span>${order.price.toLocaleString()}</span>
+                        <span>${order.amount.toFixed(3)}</span>
+                    </div>
+                `).join('');
+            }
+
+            // Mobile Sell Orders
+            const mobileSellContainer = document.getElementById('mobile-sell-orders');
+            if (mobileSellContainer) {
+                mobileSellContainer.innerHTML = orderBookData.sellOrders.map(order => `
+                    <div class="flex justify-between text-red-400 hover:bg-red-500/5 px-2 py-1.5 rounded cursor-pointer active:bg-red-500/10">
+                        <span>${order.price.toLocaleString()}</span>
+                        <span>${order.amount.toFixed(3)}</span>
+                    </div>
+                `).join('');
+            }
+
+            // Mobile Buy Orders
+            const mobileBuyContainer = document.getElementById('mobile-buy-orders');
+            if (mobileBuyContainer) {
+                mobileBuyContainer.innerHTML = orderBookData.buyOrders.map(order => `
+                    <div class="flex justify-between text-emerald-400 hover:bg-emerald-500/5 px-2 py-1.5 rounded cursor-pointer active:bg-emerald-500/10">
+                        <span>${order.price.toLocaleString()}</span>
+                        <span>${order.amount.toFixed(3)}</span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Mobile Tab Navigation
+        function initMobileTabs() {
+            const chartPanel = document.getElementById('chart-panel');
+            const orderbookPanel = document.getElementById('orderbook-panel');
+            const tradePanel = document.getElementById('trade-panel');
+            const tabButtons = document.querySelectorAll('.mobile-tab-btn');
+
+            tabButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tab = btn.dataset.tab;
+
+                    // Update button styles
+                    tabButtons.forEach(b => {
+                        b.classList.remove('text-emerald-400', 'bg-emerald-500/5');
+                        b.classList.add('text-zinc-500');
+                    });
+                    btn.classList.remove('text-zinc-500');
+                    btn.classList.add('text-emerald-400', 'bg-emerald-500/5');
+
+                    // Show corresponding panel
+                    chartPanel.classList.add('hidden');
+                    orderbookPanel.classList.add('hidden');
+                    tradePanel.classList.add('hidden');
+
+                    if (tab === 'chart') {
+                        chartPanel.classList.remove('hidden');
+                        chartPanel.classList.add('flex');
+                    } else if (tab === 'orderbook') {
+                        orderbookPanel.classList.remove('hidden');
+                        orderbookPanel.classList.add('flex');
+                    } else if (tab === 'trade') {
+                        tradePanel.classList.remove('hidden');
+                        tradePanel.classList.add('flex');
+                    }
+                });
+            });
+        }
+
+        // Mobile Pairs Drawer
+        function initMobilePairsDrawer() {
+            const mobilePairsBtn = document.getElementById('mobile-pairs-btn');
+            const mobilePairsOverlay = document.getElementById('mobile-pairs-overlay');
+            const mobilePairsDrawer = document.getElementById('mobile-pairs-drawer');
+            const closePairsDrawer = document.getElementById('close-pairs-drawer');
+
+            if (mobilePairsBtn && mobilePairsOverlay && mobilePairsDrawer) {
+                mobilePairsBtn.addEventListener('click', () => {
+                    mobilePairsOverlay.classList.remove('hidden');
+                    setTimeout(() => {
+                        mobilePairsDrawer.classList.remove('-translate-x-full');
+                    }, 10);
+                });
+
+                closePairsDrawer.addEventListener('click', () => {
+                    mobilePairsDrawer.classList.add('-translate-x-full');
+                    setTimeout(() => {
+                        mobilePairsOverlay.classList.add('hidden');
+                    }, 300);
+                });
+
+                mobilePairsOverlay.addEventListener('click', (e) => {
+                    if (e.target === mobilePairsOverlay) {
+                        mobilePairsDrawer.classList.add('-translate-x-full');
+                        setTimeout(() => {
+                            mobilePairsOverlay.classList.add('hidden');
+                        }, 300);
+                    }
+                });
+            }
+        }
+
         // Mobile menu toggle
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
@@ -336,7 +627,7 @@
             });
         }
 
-        // Trading Pairs Data - Updated to USDT pairs
+        // Trading Pairs Data
         const tradingPairs = [
             { symbol: 'BTC/USDT', name: 'Bitcoin', price: 43821.50, change24h: 2.34, volume: 2400000000, isFavorite: false },
             { symbol: 'ETH/USDT', name: 'Ethereum', price: 2284.75, change24h: 3.67, volume: 1800000000, isFavorite: false },
@@ -368,12 +659,13 @@
 
             init() {
                 this.renderPairs();
+                this.renderMobilePairs();
                 this.setupEventListeners();
                 this.loadFavorites();
             }
 
             setupEventListeners() {
-                // Search functionality
+                // Desktop Search functionality
                 const searchInput = document.getElementById('market-search');
                 if (searchInput) {
                     searchInput.addEventListener('input', (e) => {
@@ -382,7 +674,16 @@
                     });
                 }
 
-                // Filter buttons
+                // Mobile Search functionality
+                const mobileSearchInput = document.getElementById('mobile-market-search');
+                if (mobileSearchInput) {
+                    mobileSearchInput.addEventListener('input', (e) => {
+                        this.searchQuery = e.target.value.toLowerCase();
+                        this.renderMobilePairs();
+                    });
+                }
+
+                // Desktop Filter buttons
                 document.querySelectorAll('.market-filter-btn').forEach(btn => {
                     btn.addEventListener('click', (e) => {
                         this.currentFilter = e.target.dataset.filter;
@@ -396,6 +697,22 @@
                         e.target.classList.add('bg-emerald-500/10', 'text-emerald-400', 'border-emerald-500/30');
                         
                         this.renderPairs();
+                    });
+                });
+
+                // Mobile Filter buttons
+                document.querySelectorAll('.mobile-market-filter-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        this.currentFilter = e.target.dataset.filter;
+                        
+                        document.querySelectorAll('.mobile-market-filter-btn').forEach(b => {
+                            b.classList.remove('bg-emerald-500/10', 'text-emerald-400', 'border-emerald-500/30');
+                            b.classList.add('text-zinc-500', 'border-zinc-800');
+                        });
+                        e.target.classList.remove('text-zinc-500', 'border-zinc-800');
+                        e.target.classList.add('bg-emerald-500/10', 'text-emerald-400', 'border-emerald-500/30');
+                        
+                        this.renderMobilePairs();
                     });
                 });
             }
@@ -418,6 +735,7 @@
                     pair.isFavorite = !pair.isFavorite;
                     this.saveFavorites();
                     this.renderPairs();
+                    this.renderMobilePairs();
                 }
             }
 
@@ -435,25 +753,50 @@
                     
                     // Update colors based on positive/negative change
                     const colorClass = pair.change24h >= 0 ? 'text-emerald-400' : 'text-red-400';
-                    document.getElementById('current-price').className = `text-xl font-bold ${colorClass}`;
-                    document.getElementById('price-change').className = `${colorClass} text-xs`;
-                    document.getElementById('price-change-percent').className = `${colorClass} text-xs`;
+                    document.getElementById('current-price').className = `text-base md:text-xl font-bold ${colorClass}`;
+                    document.getElementById('price-change').className = `${colorClass} text-[10px] md:text-xs`;
+                    document.getElementById('price-change-percent').className = `${colorClass} text-[10px] md:text-xs`;
                     
-                    // Update 24h stats (mock data based on pair)
+                    // Update 24h stats
                     const high = pair.price * 1.05;
                     const low = pair.price * 0.95;
-                    document.getElementById('high-24h').textContent = `$${high.toFixed(2)}`;
-                    document.getElementById('low-24h').textContent = `$${low.toFixed(2)}`;
-                    document.getElementById('volume-24h').textContent = `$${(pair.volume / 1000000000).toFixed(2)}B`;
+                    
+                    // Desktop stats
+                    const high24h = document.getElementById('high-24h');
+                    const low24h = document.getElementById('low-24h');
+                    const volume24h = document.getElementById('volume-24h');
+                    
+                    if (high24h) high24h.textContent = `$${high.toFixed(2)}`;
+                    if (low24h) low24h.textContent = `$${low.toFixed(2)}`;
+                    if (volume24h) volume24h.textContent = `$${(pair.volume / 1000000000).toFixed(2)}B`;
+                    
+                    // Mobile stats
+                    const mobileHigh24h = document.getElementById('mobile-high-24h');
+                    const mobileLow24h = document.getElementById('mobile-low-24h');
+                    const mobileVolume24h = document.getElementById('mobile-volume-24h');
+                    
+                    if (mobileHigh24h) mobileHigh24h.textContent = `$${high.toFixed(2)}`;
+                    if (mobileLow24h) mobileLow24h.textContent = `$${low.toFixed(2)}`;
+                    if (mobileVolume24h) mobileVolume24h.textContent = `$${(pair.volume / 1000000000).toFixed(2)}B`;
+
+                    // Close mobile drawer after selection
+                    const mobilePairsDrawer = document.getElementById('mobile-pairs-drawer');
+                    const mobilePairsOverlay = document.getElementById('mobile-pairs-overlay');
+                    if (mobilePairsDrawer && mobilePairsOverlay) {
+                        mobilePairsDrawer.classList.add('-translate-x-full');
+                        setTimeout(() => {
+                            mobilePairsOverlay.classList.add('hidden');
+                        }, 300);
+                    }
                 }
                 
                 this.renderPairs();
+                this.renderMobilePairs();
             }
 
             getFilteredPairs() {
                 let filtered = this.pairs;
 
-                // Apply search filter
                 if (this.searchQuery) {
                     filtered = filtered.filter(pair => 
                         pair.symbol.toLowerCase().includes(this.searchQuery) ||
@@ -461,7 +804,6 @@
                     );
                 }
 
-                // Apply category filter
                 switch (this.currentFilter) {
                     case 'favorites':
                         filtered = filtered.filter(pair => pair.isFavorite);
@@ -471,7 +813,6 @@
                         filtered.sort((a, b) => b.change24h - a.change24h);
                         break;
                     default:
-                        // Sort by volume for 'all'
                         filtered.sort((a, b) => b.volume - a.volume);
                 }
 
@@ -521,7 +862,6 @@
                     `;
                 }).join('');
 
-                // Add event listeners to rendered pairs
                 container.querySelectorAll('.trading-pair-item').forEach(item => {
                     item.addEventListener('click', (e) => {
                         if (!e.target.classList.contains('favorite-btn')) {
@@ -531,6 +871,65 @@
                 });
 
                 container.querySelectorAll('.favorite-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        this.toggleFavorite(btn.dataset.symbol);
+                    });
+                });
+            }
+
+            renderMobilePairs() {
+                const container = document.getElementById('mobile-trading-pairs-list');
+                if (!container) return;
+
+                const filtered = this.getFilteredPairs();
+
+                if (filtered.length === 0) {
+                    container.innerHTML = `
+                        <div class="px-4 py-8 text-center text-zinc-600 text-sm">
+                            No pairs found
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = filtered.map(pair => {
+                    const isPositive = pair.change24h >= 0;
+                    const changeColor = isPositive ? 'text-emerald-400' : 'text-red-400';
+                    const bgColor = pair.symbol === this.activePair ? 'bg-zinc-900' : '';
+                    
+                    return `
+                        <div class="mobile-trading-pair-item px-4 py-3 hover:bg-zinc-900 active:bg-zinc-800 cursor-pointer transition-colors ${bgColor}" data-symbol="${pair.symbol}">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3 flex-1 min-w-0">
+                                    <button class="mobile-favorite-btn text-base hover:scale-110 transition-transform" data-symbol="${pair.symbol}">
+                                        ${pair.isFavorite ? '⭐' : '☆'}
+                                    </button>
+                                    <div class="min-w-0 flex-1">
+                                        <div class="text-sm font-semibold truncate">${pair.symbol}</div>
+                                        <div class="text-xs text-zinc-500 truncate">${pair.name}</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-sm font-semibold font-mono">$${pair.price < 1 ? pair.price.toFixed(4) : pair.price.toLocaleString()}</div>
+                                    <div class="text-xs font-semibold ${changeColor}">
+                                        ${isPositive ? '↑' : '↓'} ${Math.abs(pair.change24h).toFixed(2)}%
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                container.querySelectorAll('.mobile-trading-pair-item').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        if (!e.target.classList.contains('mobile-favorite-btn')) {
+                            this.selectPair(item.dataset.symbol);
+                        }
+                    });
+                });
+
+                container.querySelectorAll('.mobile-favorite-btn').forEach(btn => {
                     btn.addEventListener('click', (e) => {
                         e.stopPropagation();
                         this.toggleFavorite(btn.dataset.symbol);
@@ -574,6 +973,13 @@
                 this.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
                 this.width = rect.width;
                 this.height = rect.height;
+
+                // Adjust padding for mobile
+                if (window.innerWidth < 768) {
+                    this.chartPadding = { top: 15, right: 60, bottom: 60, left: 45 };
+                    this.volumeHeight = 40;
+                    this.candleWidth = 6;
+                }
             }
 
             generateDummyData() {
@@ -581,12 +987,10 @@
                 const oneHour = 3600000;
                 let basePrice = 43000;
                 
-                // Generate 100 candlesticks with realistic price action
                 for (let i = 99; i >= 0; i--) {
                     const time = now - (i * oneHour);
                     const volatility = 100 + Math.random() * 200;
                     
-                    // Random walk with trend
                     const trend = Math.sin(i / 10) * 50;
                     basePrice += (Math.random() - 0.48) * volatility + trend;
                     
@@ -606,7 +1010,6 @@
                     });
                 }
 
-                // Update market stats
                 const lastCandle = this.data[this.data.length - 1];
                 const firstCandle = this.data[0];
                 const priceChange = lastCandle.close - firstCandle.open;
@@ -617,18 +1020,30 @@
                 const volume24h = this.data.reduce((sum, d) => sum + d.volume, 0);
 
                 document.getElementById('current-price').textContent = `$${lastCandle.close.toFixed(2)}`;
-                document.getElementById('current-price').className = `text-xl font-bold ${priceChange >= 0 ? 'text-emerald-400' : 'text-red-400'}`;
+                document.getElementById('current-price').className = `text-base md:text-xl font-bold ${priceChange >= 0 ? 'text-emerald-400' : 'text-red-400'}`;
                 document.getElementById('price-change').textContent = `${priceChange >= 0 ? '+' : ''}$${Math.abs(priceChange).toFixed(2)}`;
-                document.getElementById('price-change').className = `text-xs ${priceChange >= 0 ? 'text-emerald-400' : 'text-red-400'}`;
+                document.getElementById('price-change').className = `text-[10px] md:text-xs ${priceChange >= 0 ? 'text-emerald-400' : 'text-red-400'}`;
                 document.getElementById('price-change-percent').textContent = `${priceChange >= 0 ? '+' : ''}${priceChangePercent}%`;
-                document.getElementById('price-change-percent').className = `text-xs ${priceChange >= 0 ? 'text-emerald-400' : 'text-red-400'}`;
-                document.getElementById('high-24h').textContent = `$${high24h.toFixed(2)}`;
-                document.getElementById('low-24h').textContent = `$${low24h.toFixed(2)}`;
-                document.getElementById('volume-24h').textContent = `$${(volume24h / 1000000000).toFixed(2)}B`;
+                document.getElementById('price-change-percent').className = `text-[10px] md:text-xs ${priceChange >= 0 ? 'text-emerald-400' : 'text-red-400'}`;
+                
+                const high24hEl = document.getElementById('high-24h');
+                const low24hEl = document.getElementById('low-24h');
+                const volume24hEl = document.getElementById('volume-24h');
+                
+                if (high24hEl) high24hEl.textContent = `$${high24h.toFixed(2)}`;
+                if (low24hEl) low24hEl.textContent = `$${low24h.toFixed(2)}`;
+                if (volume24hEl) volume24hEl.textContent = `$${(volume24h / 1000000000).toFixed(2)}B`;
+
+                const mobileHigh24hEl = document.getElementById('mobile-high-24h');
+                const mobileLow24hEl = document.getElementById('mobile-low-24h');
+                const mobileVolume24hEl = document.getElementById('mobile-volume-24h');
+                
+                if (mobileHigh24hEl) mobileHigh24hEl.textContent = `$${high24h.toFixed(2)}`;
+                if (mobileLow24hEl) mobileLow24hEl.textContent = `$${low24h.toFixed(2)}`;
+                if (mobileVolume24hEl) mobileVolume24hEl.textContent = `$${(volume24h / 1000000000).toFixed(2)}B`;
             }
 
             calculateIndicators() {
-                // Calculate moving averages
                 const periods = [7, 25, 99];
                 periods.forEach(period => {
                     const ma = [];
@@ -649,19 +1064,61 @@
             }
 
             setupEventListeners() {
-                this.canvas.addEventListener('mousemove', (e) => {
+                // Mouse/Touch events for crosshair
+                const handleMove = (e) => {
                     const rect = this.canvas.getBoundingClientRect();
-                    this.crosshair.x = e.clientX - rect.left;
-                    this.crosshair.y = e.clientY - rect.top;
-                    this.draw();
-                    this.updateTooltip(e);
+                    const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+                    const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+                    
+                    if (clientX && clientY) {
+                        this.crosshair.x = clientX - rect.left;
+                        this.crosshair.y = clientY - rect.top;
+                        this.draw();
+                        this.updateTooltip(clientX, clientY, rect);
+                    }
+                };
+
+                this.canvas.addEventListener('mousemove', handleMove);
+                this.canvas.addEventListener('touchmove', (e) => {
+                    e.preventDefault();
+                    handleMove(e);
                 });
 
-                this.canvas.addEventListener('mouseleave', () => {
+                const handleEnd = () => {
                     this.crosshair.x = null;
                     this.crosshair.y = null;
                     document.getElementById('chart-tooltip').classList.add('hidden');
                     this.draw();
+                };
+
+                this.canvas.addEventListener('mouseleave', handleEnd);
+                this.canvas.addEventListener('touchend', handleEnd);
+
+                // Pinch zoom for mobile
+                let lastDistance = 0;
+                this.canvas.addEventListener('touchstart', (e) => {
+                    if (e.touches.length === 2) {
+                        const dx = e.touches[0].clientX - e.touches[1].clientX;
+                        const dy = e.touches[0].clientY - e.touches[1].clientY;
+                        lastDistance = Math.sqrt(dx * dx + dy * dy);
+                    }
+                });
+
+                this.canvas.addEventListener('touchmove', (e) => {
+                    if (e.touches.length === 2) {
+                        e.preventDefault();
+                        const dx = e.touches[0].clientX - e.touches[1].clientX;
+                        const dy = e.touches[0].clientY - e.touches[1].clientY;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (lastDistance > 0) {
+                            const delta = distance > lastDistance ? 1 : -1;
+                            this.candleWidth = Math.max(4, Math.min(20, this.candleWidth + delta));
+                            this.draw();
+                        }
+                        
+                        lastDistance = distance;
+                    }
                 });
 
                 this.canvas.addEventListener('wheel', (e) => {
@@ -677,9 +1134,8 @@
                 });
             }
 
-            updateTooltip(e) {
-                const rect = this.canvas.getBoundingClientRect();
-                const x = e.clientX - rect.left;
+            updateTooltip(clientX, clientY, rect) {
+                const x = clientX - rect.left;
                 const chartWidth = this.width - this.chartPadding.left - this.chartPadding.right;
                 const candleFullWidth = this.candleWidth + this.candleSpacing;
                 const maxVisible = Math.floor(chartWidth / candleFullWidth);
@@ -697,8 +1153,8 @@
                     document.getElementById('tooltip-close').textContent = candle.close.toFixed(2);
                     document.getElementById('tooltip-volume').textContent = (candle.volume / 1000000).toFixed(2) + 'M';
                     
-                    tooltip.style.left = Math.min(e.clientX + 15, rect.width - 200) + 'px';
-                    tooltip.style.top = Math.min(e.clientY + 15, rect.height - 150) + 'px';
+                    tooltip.style.left = Math.min(clientX + 15, rect.width - 200) + 'px';
+                    tooltip.style.top = Math.min(clientY + 15, rect.height - 150) + 'px';
                     tooltip.classList.remove('hidden');
                 }
             }
@@ -846,7 +1302,7 @@
                 const priceSteps = 8;
 
                 this.ctx.fillStyle = '#71717a';
-                this.ctx.font = '10px monospace';
+                this.ctx.font = window.innerWidth < 768 ? '9px monospace' : '10px monospace';
                 this.ctx.textAlign = 'left';
 
                 for (let i = 0; i <= priceSteps; i++) {
@@ -882,10 +1338,27 @@
             const pairsManager = new TradingPairsManager();
             const chart = new TradingChart('trading-chart');
 
-            // Timeframe buttons
+            // Initialize mobile components
+            initMobileTabs();
+            initMobilePairsDrawer();
+            renderOrderBook();
+
+            // Desktop Timeframe buttons
             document.querySelectorAll('.timeframe-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     document.querySelectorAll('.timeframe-btn').forEach(b => {
+                        b.classList.remove('border-emerald-500', 'bg-emerald-500/10', 'text-emerald-400', 'active');
+                        b.classList.add('border-zinc-800');
+                    });
+                    btn.classList.remove('border-zinc-800');
+                    btn.classList.add('border-emerald-500', 'bg-emerald-500/10', 'text-emerald-400', 'active');
+                });
+            });
+
+            // Mobile Timeframe buttons
+            document.querySelectorAll('.mobile-timeframe-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.mobile-timeframe-btn').forEach(b => {
                         b.classList.remove('border-emerald-500', 'bg-emerald-500/10', 'text-emerald-400', 'active');
                         b.classList.add('border-zinc-800');
                     });
