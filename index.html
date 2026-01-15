@@ -17,8 +17,9 @@
         <div class="hidden lg:flex h-full px-6 items-center justify-between">
             <div class="flex items-center gap-6">
                 <a href="#" class="flex items-center gap-2">
-                    <img src="assets/images/IMG_20260115_133429_460-1768464368957.jpg" alt="Logo" class="h-6 w-6 object-cover rounded">
-                    <span class="text-sm font-semibold">ACE</span>
+                    <img src="assets/images/ChatGPT_Image_Jan_15_2026_07_44_13_PM-1768486466751.png" alt="Circular Blue Logo" class="h-6 w-6 object-cover rounded">
+                    <img src="assets/images/ChatGPT_Image_Jan_15_2026_07_35_31_PM-1768486014245.png" alt="ASIA Logo" class="h-6 w-6 object-cover rounded">
+                    
                 </a>
                 
                 <div class="flex items-center gap-6">
@@ -122,6 +123,8 @@
                         <path d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
                 </button>
+                <img src="assets/images/ChatGPT_Image_Jan_15_2026_07_44_13_PM-1768486466751.png" alt="Circular Blue Logo" class="h-5 w-5 object-cover rounded">
+                <img src="assets/images/ChatGPT_Image_Jan_15_2026_07_35_31_PM-1768486014245.png" alt="ASIA Logo" class="h-5 w-5 object-cover rounded">
                 <img src="assets/images/IMG_20260115_133429_460-1768464368957.jpg" alt="Logo" class="h-5 w-5 object-cover rounded">
             </div>
 
@@ -810,7 +813,7 @@
                 <div class="flex flex-col items-center gap-1">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="12" y1="5" x2="12" y2="19"></line>
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <line x1="8" y1="12" x2="16" y2="12"></line>
                     </svg>
                     <span>Trade</span>
                 </div>
@@ -1427,7 +1430,7 @@
 
                 if (sellContainer) {
                     sellContainer.innerHTML = orderBookData.sellOrders.map(order => `
-                        <div class="grid grid-cols-3 gap-1 text-[#E05858] relative overflow-hidden py-0.5">
+                        <div class="grid grid-cols-3 gap-1 text-[9px] text-[#6B7C8B] relative overflow-hidden py-0.5">
                             <div class="absolute inset-0 bg-[rgba(224,88,88,0.08)] origin-right" style="width: ${(order.size / 4) * 100}%"></div>
                             <span class="relative z-10 text-left">${order.price.toFixed(3)}</span>
                             <span class="relative z-10 text-right">${order.size.toFixed(3)}</span>
@@ -1438,7 +1441,7 @@
 
                 if (buyContainer) {
                     buyContainer.innerHTML = orderBookData.buyOrders.map(order => `
-                        <div class="grid grid-cols-3 gap-1 text-[#1FD38A] relative overflow-hidden py-0.5">
+                        <div class="grid grid-cols-3 gap-1 text-[9px] text-[#6B7C8B] relative overflow-hidden py-0.5">
                             <div class="absolute inset-0 bg-[rgba(31,211,138,0.08)] origin-right" style="width: ${(order.size / 4) * 100}%"></div>
                             <span class="relative z-10 text-left">${order.price.toFixed(3)}</span>
                             <span class="relative z-10 text-right">${order.size.toFixed(3)}</span>
@@ -1494,6 +1497,77 @@
 
                     this.renderOrderBook();
                 }, 3000);
+            }
+        }
+
+        // Trading Panel Manager - NEW CLASS for Buy/Sell toggle functionality
+        class TradingPanelManager {
+            constructor() {
+                this.currentMode = 'buy'; // Track current trading mode
+                this.init();
+            }
+
+            init() {
+                this.setupToggleButtons();
+                this.updatePrimaryCTA();
+            }
+
+            setupToggleButtons() {
+                // Get all Buy/Sell toggle button containers
+                const toggleContainers = document.querySelectorAll('.flex.gap-1');
+                
+                toggleContainers.forEach(container => {
+                    const buyBtn = container.querySelector('button:first-child');
+                    const sellBtn = container.querySelector('button:last-child');
+                    
+                    if (buyBtn && sellBtn && buyBtn.textContent.trim() === 'Buy' && sellBtn.textContent.trim() === 'Sell') {
+                        // Buy button click handler
+                        buyBtn.addEventListener('click', () => {
+                            this.currentMode = 'buy';
+                            this.updateToggleState(buyBtn, sellBtn);
+                            this.updatePrimaryCTA();
+                        });
+                        
+                        // Sell button click handler - NOW FULLY FUNCTIONAL
+                        sellBtn.addEventListener('click', () => {
+                            this.currentMode = 'sell';
+                            this.updateToggleState(sellBtn, buyBtn);
+                            this.updatePrimaryCTA();
+                        });
+                    }
+                });
+            }
+
+            updateToggleState(activeBtn, inactiveBtn) {
+                // Update active button
+                activeBtn.classList.remove('bg-transparent', 'text-[#6B7C8B]', 'border', 'border-[#1F2A33]');
+                activeBtn.classList.add(
+                    this.currentMode === 'buy' ? 'bg-[rgba(31,211,138,0.15)]' : 'bg-[rgba(224,88,88,0.15)]',
+                    this.currentMode === 'buy' ? 'text-[#1FD38A]' : 'text-[#E05858]'
+                );
+                
+                // Update inactive button
+                inactiveBtn.classList.remove('bg-[rgba(31,211,138,0.15)]', 'bg-[rgba(224,88,88,0.15)]', 'text-[#1FD38A]', 'text-[#E05858]');
+                inactiveBtn.classList.add('bg-transparent', 'text-[#6B7C8B]', 'border', 'border-[#1F2A33]');
+            }
+
+            updatePrimaryCTA() {
+                // Update the primary CTA button
+                const ctaButtons = document.querySelectorAll('button.w-full.h-8');
+                
+                ctaButtons.forEach(btn => {
+                    if (btn.textContent.includes('Buy HYPE') || btn.textContent.includes('Sell HYPE')) {
+                        if (this.currentMode === 'buy') {
+                            btn.textContent = 'Buy HYPE';
+                            btn.classList.remove('bg-[#E05858]', 'hover:bg-[#D04848]');
+                            btn.classList.add('bg-[#2DD4BF]', 'hover:bg-[#22D3EE]');
+                        } else {
+                            btn.textContent = 'Sell HYPE';
+                            btn.classList.remove('bg-[#2DD4BF]', 'hover:bg-[#22D3EE]');
+                            btn.classList.add('bg-[#E05858]', 'hover:bg-[#D04848]');
+                        }
+                    }
+                });
             }
         }
 
@@ -1974,6 +2048,9 @@
             // UI managers
             const ui = new UIManager();
             const mobileUI = new MobileUIManager();
+            
+            // NEW: Trading Panel Manager - Makes Sell button functional
+            const tradingPanel = new TradingPanelManager();
         });
     </script>
 <script id="dhws-data-injector" src="/public/dhws-data-injector.js"></script>

@@ -1252,8 +1252,17 @@ body {
   background-color: rgb(45 212 191 / var(--tw-bg-opacity, 1));
 }
 
+.bg-\[\#E05858\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(224 88 88 / var(--tw-bg-opacity, 1));
+}
+
 .bg-\[rgba\(224\2c 88\2c 88\2c 0\.08\)\] {
   background-color: rgba(224,88,88,0.08);
+}
+
+.bg-\[rgba\(224\2c 88\2c 88\2c 0\.15\)\] {
+  background-color: rgba(224,88,88,0.15);
 }
 
 .bg-\[rgba\(31\2c 211\2c 138\2c 0\.08\)\] {
@@ -1613,6 +1622,11 @@ body {
 .hover\:bg-\[\#22D3EE\]:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(34 211 238 / var(--tw-bg-opacity, 1));
+}
+
+.hover\:bg-\[\#D04848\]:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(208 72 72 / var(--tw-bg-opacity, 1));
 }
 
 .hover\:text-\[\#E6EEF5\]:hover {
